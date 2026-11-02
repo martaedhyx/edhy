@@ -1,0 +1,2183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="application-name" content="EdhyX">
+<meta name="apple-mobile-web-app-title" content="EdhyX">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>martaedhyx</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='black'/%3E%3Ccircle cx='50' cy='50' r='40' fill='white'/%3E%3Crect x='30.5' y='31' width='9' height='28' rx='4.5'/%3E%3Crect x='60.5' y='31' width='9' height='28' rx='4.5'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#000000; --side:#000000; --panel:#0d0d0d; --ink:#ffffff; --muted:rgba(255,255,255,.62); --line:#2e2e2e;
+  --accent:#ffffff; --accent-ink:#000000; --user:#1a1a1a; --code:#141414; --err:#ff6b6b; --hover:#1c1c1c;
+  --serif: ui-serif, Georgia, "Times New Roman", serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}@supports (height:100dvh){html,body{height:100dvh}}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);display:flex;overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+button:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Sidebar */
+#side{width:288px;background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;
+  padding:calc(12px + env(safe-area-inset-top,0px)) 10px calc(12px + env(safe-area-inset-bottom,0px));flex-shrink:0;z-index:30}
+.brand{display:flex;align-items:center;min-height:46px;padding:3px 14px 7px}
+.brand-name{font-family:var(--sans);font-size:26.52px;font-weight:700;line-height:1.4;color:#fff;letter-spacing:0}
+#title{display:none!important}
+.newbtn{display:flex;align-items:center;gap:10px;width:100%;padding:10px;border-radius:10px;font-weight:600;color:#fff;background:#000}
+.newbtn:hover,.ci:hover,.foot:hover{background:var(--hover)}
+.newbtn i,.clear-history i{display:inline-grid;place-items:center;width:26px;height:26px;flex:0 0 26px;border-radius:50%;border:1px solid #fff;background:#000;color:#fff;font-style:normal;font-size:19.8px;line-height:1}
+.lbl{color:var(--muted);font-size:14.3px;padding:16px 10px 6px}
+#list{list-style:none;margin:0;padding:0;overflow-y:auto;flex:1}
+#list li{display:flex;align-items:center;border-radius:10px}
+#list li.on{background:var(--hover)}
+.ci{flex:1;min-width:0;text-align:left;padding:8px 10px;border-radius:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.del{color:var(--muted);padding:6px 10px;border-radius:8px;opacity:.7}
+.del:hover{color:var(--err);opacity:1}
+.foot{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px;border-radius:10px;margin-top:8px}
+ .foot-icon{display:inline-grid;place-items:center;width:26px;height:26px;flex:0 0 26px;color:#fff;font-size:18px;line-height:1}
+.none{color:var(--muted);font-size:15.4px;padding:6px 10px}
+#scrim{display:none}
+
+/* Main */
+main{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;height:100%}
+.top{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 12px 8px}
+#menuBtn{display:none;width:36px;height:32px;padding:4px;border-radius:10px;align-items:center;justify-content:center}
+.menu-lines{display:flex;flex-direction:column;align-items:center;gap:2.25px;width:16px}
+.menu-lines span{display:block;width:16px;height:1.45px;border-radius:2px;background:currentColor}
+#menuBtn:hover{background:var(--hover)}
+#title{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#modelLabel{margin-left:auto;color:var(--muted);font-size:14.3px;white-space:nowrap;display:none}
+#chat{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:8px 16px 16px}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:18px;min-height:100%}
+.hello{margin:auto;text-align:center;padding:40px 0}
+.hello svg{display:block;margin:0 auto 20px}
+.hello h1{font:400 clamp(28px,6vw,40px)/1.2 var(--serif);margin:0 0 8px;height:2.4em;display:flex;align-items:center;justify-content:center}
+.hello p{margin:0;color:var(--muted)}
+
+.msg.user{align-self:flex-end;max-width:85%;background:var(--user);padding:10px 16px;border-radius:18px;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.bot{align-self:stretch;font:17px/1.65 var(--serif);overflow-wrap:anywhere}
+.msg.bot p{margin:0 0 .8em}
+.msg.bot em{font-style:italic}
+.msg.bot .md-table-wrap{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;margin:1em 0;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.msg.bot .md-table{border-collapse:separate;border-spacing:0;width:100%;font:13.5px/1.55 var(--sans);min-width:660px;table-layout:fixed}
+.msg.bot .md-table th,.msg.bot .md-table td{width:25%;padding:11px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line);overflow-wrap:anywhere;word-break:normal}
+.msg.bot .md-table th{font-size:12px;font-weight:750;letter-spacing:.025em;background:var(--code);color:var(--text)}
+.msg.bot .md-table th:first-child,.msg.bot .md-table td:first-child{width:105px;font-weight:700}
+.msg.bot .md-table tbody tr:nth-child(even){background:rgba(127,127,127,.055)}
+.msg.bot .md-table tbody tr:last-child td{border-bottom:0}
+.msg.bot .md-table td br{display:block;content:"";margin:.35em 0}
+.msg.bot .mermaid-block{max-width:100%;overflow-x:auto;margin:.8em 0;padding:12px;background:var(--code);border:1px solid var(--line);border-radius:10px;text-align:center}
+.msg.bot .mermaid-block svg{max-width:100%;height:auto}
+.msg.bot .edhychart-wrap{position:relative;width:100%;height:280px;margin:.8em 0;padding:12px;background:var(--code);border:1px solid var(--line);border-radius:10px}
+.msg.bot .edhychart-wrap canvas{max-width:100%}
+.msg.bot .chart-error{border-color:#ef4444;color:#fca5a5}
+
+.msg.bot h2,.msg.bot h3,.msg.bot h4{font-family:var(--serif);margin:1em 0 .4em;line-height:1.3;font-weight:750}
+.msg.bot h2:nth-of-type(6n+1),.msg.bot h3:nth-of-type(6n+1),.msg.bot h4:nth-of-type(6n+1){color:#5eead4}
+.msg.bot h2:nth-of-type(6n+2),.msg.bot h3:nth-of-type(6n+2),.msg.bot h4:nth-of-type(6n+2){color:#fbbf24}
+.msg.bot h2:nth-of-type(6n+3),.msg.bot h3:nth-of-type(6n+3),.msg.bot h4:nth-of-type(6n+3){color:#fb7185}
+.msg.bot h2:nth-of-type(6n+4),.msg.bot h3:nth-of-type(6n+4),.msg.bot h4:nth-of-type(6n+4){color:#c4b5fd}
+.msg.bot h2:nth-of-type(6n+5),.msg.bot h3:nth-of-type(6n+5),.msg.bot h4:nth-of-type(6n+5){color:#86efac}
+.msg.bot h2:nth-of-type(6n),.msg.bot h3:nth-of-type(6n),.msg.bot h4:nth-of-type(6n){color:#7dd3fc}
+.msg.bot h2{font-size:1.3em}.msg.bot h3{font-size:1.15em}.msg.bot h4{font-size:1.05em}
+.msg.bot ul,.msg.bot ol{margin:0 0 .8em;padding-left:1.4em}
+.msg.bot li{margin:.2em 0}
+.msg.bot pre{background:var(--code);border:1px solid var(--line);padding:12px;border-radius:10px;overflow-x:auto;margin:.8em 0;font:13.5px/1.5 ui-monospace,Menlo,Consolas,monospace}
+.msg.bot code{background:var(--code);padding:1px 5px;border-radius:5px;font:.88em ui-monospace,Menlo,Consolas,monospace}
+.msg.bot pre code{background:none;padding:0;font-size:inherit}.msg.bot a.md-link{color:#eee;text-decoration-line:underline;text-decoration-style:dotted;text-decoration-color:#aaa;text-underline-offset:4px;overflow-wrap:anywhere}.msg.bot .site-icon{width:14px;height:14px;object-fit:contain;vertical-align:-2px;margin-right:5px;border-radius:3px}.msg.bot .task{list-style:none;margin-left:-1.4em}.msg.bot .task input{accent-color:#22c55e;width:14px;height:14px;vertical-align:-2px;margin-right:7px}.msg.bot pre{position:relative;padding:38px 12px 12px;background:#101318;border:1px solid #30343b;border-radius:10px;overflow-x:auto}.msg.bot .code-lang{position:absolute;top:9px;left:12px;color:#aeb7c4;font-size:12.1px}.msg.bot .code-copy{position:absolute;top:5px;right:7px;border:1px solid #424852;border-radius:6px;padding:3px 7px;font-size:12.1px}
+.msg.err{align-self:stretch;color:var(--ink);border:1px solid var(--err);border-radius:12px;padding:10px 14px;font-size:16.5px}
+.copy{color:var(--muted);font-size:14.3px;padding:2px 8px;margin-left:-8px;border-radius:8px}
+.copy:hover{background:var(--hover)}
+.msg.bot>.copy{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:28px;margin:5px 1px 0 0;padding:4px 6px;border:1px solid transparent;border-radius:8px;vertical-align:middle}
+.msg.bot>.copy:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.typing{color:var(--muted);font-style:italic;font-size:13.2px}
+@media (prefers-reduced-motion: no-preference){ .typing{animation:pulse 1.5s ease-in-out infinite} @keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}} }
+
+/* Input */
+.dock{padding:8px 16px calc(14px + env(safe-area-inset-bottom,0px))}
+.box{max-width:720px;margin:0 auto;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:10px;display:flex;align-items:flex-end;gap:8px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.box:focus-within{border-color:var(--accent)}
+.box textarea{flex:1;resize:none;border:0;background:none;color:var(--ink);font:16px/1.5 var(--sans);padding:6px 0;max-height:160px;outline:none}
+#sendBtn{width:36px;height:36px;border-radius:50%;background:#000;color:#fff;display:grid;place-items:center;flex-shrink:0}
+#sendBtn:disabled{opacity:.4;cursor:default}
+.box{position:relative}
+#plusBtn{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-size:24.2px;line-height:1;flex-shrink:0;color:var(--ink)}
+#plusBtn:hover{background:var(--hover)}
+#menu{display:none;position:absolute;left:8px;bottom:calc(100% + 8px);background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:6px;min-width:230px;z-index:10;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+#menu.on{display:block}
+#menu button{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:10px}
+#menu button:hover{background:var(--hover)}
+#chips{max-width:720px;margin:0 auto 8px;display:flex;flex-wrap:wrap;gap:8px}
+#chips:empty{display:none}
+.chip{display:flex;align-items:center;gap:8px;background:var(--user);border:1px solid var(--line);border-radius:12px;padding:4px 6px 4px 8px;font-size:15.4px;max-width:100%}
+.chip.mode{border-color:var(--accent)}
+.chip img{width:32px;height:32px;object-fit:cover;border-radius:6px}
+.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:170px}
+.chip button{padding:0 6px;font-size:19.8px;color:var(--muted)}
+.thumb{display:block;max-width:220px;max-height:220px;border-radius:12px;margin-bottom:8px}
+.file{font-size:15.4px;margin-bottom:6px}
+.msg.bot img.gen{display:block;max-width:100%;border-radius:12px;margin:.6em 0}
+#micBtn{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;color:var(--ink)}
+#micBtn:hover{background:var(--hover)}
+#micBtn.on{background:var(--accent);color:var(--accent-ink)}
+.lens button[data-p]{display:block;width:100%;text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:12px;margin-top:8px}
+.lens button[data-p]:hover{background:var(--hover)}
+.src{font-size:13px!important;color:var(--muted);margin-top:16px;display:flex;flex-direction:column;align-items:stretch;gap:8px;width:100%;max-width:620px}
+.src-heading{width:100%;font-size:12px!important;color:var(--muted);font-weight:650;padding:0 2px 2px}
+.src .src-card{display:flex;align-items:center;gap:10px;width:100%;min-width:0;max-width:100%;box-sizing:border-box;padding:9px 11px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:inherit;text-decoration:none;transition:border-color .15s,background .15s;min-height:54px;overflow:hidden}
+.src .src-card:hover{border-color:#888;background:var(--hover)}
+.list-source{margin:6px 0 2px;padding:6px 9px;border-left:2px solid var(--line);font-size:.88em;color:var(--muted)}
+.list-source .md-link{display:inline-flex;align-items:center;gap:6px;overflow-wrap:anywhere}
+.list-source .site-icon{width:16px;height:16px;object-fit:contain;vertical-align:middle}
+.src .src-thumb{width:30px!important;height:30px!important;flex:0 0 30px;object-fit:contain;border-radius:8px;background:#fff;padding:3px;border:1px solid var(--line)}
+.src .src-preview-thumb{width:76px;height:50px;flex:0 0 76px;object-fit:cover;border-radius:8px;background:#171717;margin-left:auto;border:1px solid var(--line)}
+.msg.bot .md-link .site-icon{width:14px;height:14px;flex:0 0 14px}
+.src .src-meta{display:flex;flex-direction:column;min-width:0;gap:1px}
+.src .src-meta strong{font-size:12px!important;line-height:1.25;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.src .src-meta small{font-size:10px!important;line-height:1.2;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msg.bot .md-image-thumb{display:block;max-width:min(100%,560px);max-height:360px;object-fit:contain;border:1px solid var(--line);border-radius:12px;margin:10px 0}
+.msg.bot .md-image-link{display:inline-block;max-width:100%}
+.note{max-width:720px;margin:6px auto 0;text-align:center;color:var(--muted);font-size:12.1px!important}
+
+textarea::placeholder,input::placeholder{color:var(--muted);opacity:1}
+.logo{display:block}
+.logo .eyes{transform:translate(calc(var(--ex,0) * 1px),calc(var(--ey,0) * 1px));transition:transform .16s ease-out}
+.logo .eye{transform-box:fill-box;transform-origin:center;transition:transform .1s}
+.logo .eye.l{transform:translateY(calc(var(--dl,0) * 1px)) scaleY(calc(var(--sl,1) * var(--bl,1)))}
+.logo .eye.r{transform:translateY(calc(var(--dr,0) * 1px)) scaleY(calc(var(--sr,1) * var(--bl,1)))}
+.logo.blink{--bl:.08}
+.msg.bot.typing{display:flex;align-items:center;gap:10px}
+.msg.bot.typing .logo{flex-shrink:0}
+
+/* Dialog */
+dialog{border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--ink);width:min(440px,92vw);padding:22px}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+dialog h2{margin:0 0 6px;font:600 20px var(--serif)}
+label{display:block;margin:14px 0 4px;font-size:15.4px;font-weight:600}
+label span{display:block;font-weight:400;color:var(--muted);font-size:13.75px}
+dialog input,dialog textarea{width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font:inherit}
+.row{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+.row button{border:1px solid var(--line);border-radius:10px;padding:8px 14px}
+.row .primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
+@media (max-width:860px){
+  #side{position:fixed;inset:0 auto 0 0;transform:translateX(-100%);transition:transform .2s;box-shadow:none}
+  body.open #side{transform:none;box-shadow:4px 0 24px rgba(0,0,0,.25)}
+  body.open #scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:20}
+  #menuBtn{display:block}
+}
+@media (prefers-reduced-motion: reduce){ #side{transition:none} }
+
+.msg.bot .marta-name{color:#ff3030!important;font-weight:700!important}
+
+*, *::before, *::after{font-family:var(--sans)!important;font-size:15.4px!important}
+.msg.user,.msg.bot{font-size:15.4px!important;line-height:1.6!important}
+.msg.bot h2{font-size:17.4px!important;line-height:1.3!important}
+.msg.bot h3{font-size:16.2px!important;line-height:1.3!important}
+.msg.bot h4{font-size:15.4px!important;line-height:1.3!important}
+.msg.bot .md-table{font-size:13.2px!important;line-height:1.45!important;min-width:0!important}
+.msg.bot .md-table th,.msg.bot .md-table td{padding:8px 9px!important}
+input, textarea{font-size:17.6px!important}
+
+.msg.bot pre{
+  background:#05070b!important;
+  border:1px solid #f4f8ff!important;
+  box-shadow:0 0 3px rgba(255,255,255,.95),0 0 10px rgba(255,255,255,.22),inset 0 0 12px rgba(255,255,255,.035)!important;
+  color:#f4f7ff!important;
+  text-shadow:0 0 2px rgba(255,255,255,.22);
+  -webkit-font-smoothing:antialiased;
+}
+.msg.bot pre code{
+  color:#f4f7ff!important;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;
+  font-size:14.3px!important;
+  line-height:1.65!important;
+}
+.msg.bot pre .hljs-keyword,
+.msg.bot pre .hljs-selector-tag,
+.msg.bot pre .hljs-literal,
+.msg.bot pre .hljs-meta .hljs-keyword,
+.msg.bot pre .hljs-doctag{color:#ff365f!important;text-shadow:0 0 5px rgba(255,54,95,.42)}
+.msg.bot pre .hljs-title,
+.msg.bot pre .hljs-title.function_,
+.msg.bot pre .hljs-function .hljs-title,
+.msg.bot pre .hljs-attr,
+.msg.bot pre .hljs-attribute,
+.msg.bot pre .hljs-property,
+.msg.bot pre .hljs-selector-id,
+.msg.bot pre .hljs-selector-class{color:#35baff!important;text-shadow:0 0 5px rgba(53,186,255,.4)}
+.msg.bot pre .hljs-string,
+.msg.bot pre .hljs-regexp,
+.msg.bot pre .hljs-template-variable,
+.msg.bot pre .hljs-addition{color:#42f58d!important;text-shadow:0 0 5px rgba(66,245,141,.38)}
+.msg.bot pre .hljs-number,
+.msg.bot pre .hljs-symbol,
+.msg.bot pre .hljs-bullet{color:#ffd166!important}
+.msg.bot pre .hljs-built_in,
+.msg.bot pre .hljs-type,
+.msg.bot pre .hljs-class .hljs-title{color:#c6a0ff!important}
+.msg.bot pre .hljs-comment,
+.msg.bot pre .hljs-quote{color:#9aa7b8!important;font-style:italic}
+.msg.bot pre .hljs-variable,
+.msg.bot pre .hljs-params,
+.msg.bot pre .hljs-name,
+.msg.bot pre .hljs-tag{color:#f4f7ff!important}
+.msg.bot pre .code-lang{color:#ffffff!important;text-shadow:0 0 6px rgba(255,255,255,.5)}
+.msg.bot pre .code-copy{border-color:#f4f8ff!important;color:#ffffff!important;box-shadow:0 0 5px rgba(255,255,255,.22)}
+.msg.bot pre .code-copy:hover{background:#ffffff!important;color:#05070b!important}
+
+.clear-history{display:flex;align-items:center;gap:10px;width:100%;margin:0;padding:10px;border:0;border-radius:10px;text-align:left;font:inherit;font-weight:600;line-height:1.55;color:#fff;background:#000}
+.clear-history:hover{background:var(--hover)}
+
+.msg.bot.typing,.msg.bot.typing *{font-size:15.4px!important;line-height:1.35!important;font-style:italic!important}
+.msg.bot.typing .logo{font-size:initial!important}
+@media (prefers-reduced-motion: no-preference){
+  .msg.bot.typing{animation:none!important;opacity:1!important}
+  .msg.bot.typing > span{animation:pulse 1.5s ease-in-out infinite}
+}
+</style>
+</head>
+<body>
+
+<aside id="side" aria-label="Menu">
+  <div class="brand" id="brand"><span class="brand-name">EdhyX</span></div>
+  <button class="newbtn" id="newBtn" type="button"><i>+</i> Obrolan Baru</button>
+  <button class="clear-history" id="clearHistoryBtn" type="button"><i>−</i> Hapus Riwayat Chat</button>
+  <ul id="list"></ul>
+  <button class="foot" id="settingsBtn" type="button"><span class="foot-icon" aria-hidden="true">⚙</span> Pengaturan</button>
+</aside>
+<div id="scrim"></div>
+
+<main>
+  <div class="top">
+    <button id="menuBtn" type="button" aria-label="Buka menu"><span class="menu-lines" aria-hidden="true"><span></span><span></span><span></span></span></button>
+    <div id="title">Chat baru</div>
+    <div id="modelLabel"></div>
+  </div>
+  <div id="chat" aria-live="polite"><div class="wrap" id="wrap"></div></div>
+  <div class="dock">
+    <div id="chips"></div>
+    <form class="box" id="form">
+      <div id="menu" role="menu">
+        <button type="button" id="mFile">Lampirkan file atau foto</button>
+        <button type="button" id="mCam">Ambil foto</button>
+        <button type="button" id="mLens">Lens: baca gambar</button>
+        <button type="button" id="mLoc">Bagikan lokasi (GPS)</button>
+        <button type="button" id="mWeb">Cari di web</button>
+        <button type="button" id="mImg">Buat gambar</button>
+      </div>
+      <button id="plusBtn" type="button" aria-label="Tambah lampiran">+</button>
+      <input type="file" id="fileIn" multiple style="display:none">
+      <input type="file" id="camIn" accept="image/*" capture="environment" style="display:none">
+      <textarea id="text" rows="1" placeholder="Ketik pesan..." aria-label="Pesan"></textarea>
+      <button id="micBtn" type="button" aria-label="Bicara">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      </button>
+      <button id="sendBtn" type="submit" aria-label="Kirim">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      </button>
+    </form>
+    <div class="note">officialbroadcaster | martaedhyx</div>
+  </div>
+</main>
+
+<input type="file" id="lensIn" accept="image/*" style="display:none">
+<dialog id="lensDlg" class="lens">
+  <h2>Lens</h2>
+  <p style="margin:0;color:var(--muted);font-size:15.4px">Pilih tugas, lalu ambil atau pilih gambar.</p>
+  <button type="button" data-p="Identifikasi semua objek di gambar ini dan jelaskan singkat.">Apa ini?</button>
+  <button type="button" data-p="Salin seluruh teks yang terlihat di gambar ini persis apa adanya.">Baca dan salin teks</button>
+  <button type="button" data-p="Baca teks di gambar ini, lalu terjemahkan ke bahasa Indonesia.">Terjemahkan teks</button>
+  <button type="button" data-p="Kerjakan soal di gambar ini langkah demi langkah.">Kerjakan soal</button>
+  <button type="button" data-web="1" data-p="Kenali produk di gambar ini, lalu cari info harga dan tempat belinya.">Cari produk</button>
+  <button type="button" data-p="Kenali tanaman atau hewan di gambar ini, lalu beri info penting dan cara merawatnya.">Tanaman dan hewan</button>
+  <div class="row"><button type="button" id="lensCancel">Batal</button></div>
+</dialog>
+<dialog id="dlg">
+  <h2>Pengaturan</h2>
+  <label for="key">API key Gemini<span>Dibuat di aistudio.google.com. Disimpan hanya di browser ini.</span></label>
+  <input id="key" type="password" autocomplete="off" placeholder="AIza...">
+  <label for="model">Model<span>Untuk akun gratis, pakai model Flash atau Flash-Lite.</span></label>
+  <select id="model">
+    <option value="gemini-3.8-flash">gemini-3.8-flash</option>
+    <option value="gemini-3.6-flash">gemini-3.6-flash</option>
+    <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite</option>
+    <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite</option>
+    <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+    <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite</option>
+  </select>
+  <label for="imgmodel">Model gambar<span>Dipakai di "Buat gambar". Model gambar sering butuh akun berbayar.</span></label>
+  <input id="imgmodel" list="imgmodels" placeholder="gemini-3.1-flash-image">
+  <datalist id="imgmodels"><option value="gemini-3.1-flash-image"><option value="gemini-3.1-flash-lite-image"></datalist>
+  <label for="sys">Kepribadian bot<span>Instruksi yang selalu diikuti bot.</span></label>
+  <textarea id="sys" rows="3"></textarea>
+  <div class="row">
+    <button type="button" id="cancelBtn">Batal</button>
+    <button type="button" class="primary" id="saveBtn">Simpan</button>
+  </div>
+</dialog>
+
+<!-- Library CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<!-- Main Script -->
+<script>
+(function(){
+  var DEFAULTS = {
+    model: 'gemini-3.8-flash',
+    sys: 'Kamu asisten yang ramah dan membantu. Jawab dalam bahasa yang dipakai pengguna, singkat dan jelas.'
+  };
+  var $ = function(id){ return document.getElementById(id); };
+  var EYE = { x:0, y:0, sl:1, sr:1, dl:0, dr:0 };
+  function eyeVars(){ return { '--ex':EYE.x, '--ey':EYE.y, '--sl':EYE.sl, '--sr':EYE.sr, '--dl':EYE.dl, '--dr':EYE.dr }; }
+  function logo(px){
+    var size = (px * 1.3).toFixed(1);
+    var v = eyeVars(), st = Object.keys(v).map(function(k){ return k + ':' + v[k]; }).join(';');
+    return '<svg class="logo" width="'+size+'" height="'+size+'" viewBox="0 0 100 100" role="img" aria-label="martaedhyx" style="'+st+'">'
+      + '<circle cx="50" cy="50" r="48" fill="#fff"/>'
+      + '<g class="eyes"><rect class="eye l" x="30.5" y="31" width="9" height="28" rx="4.5" fill="#000"/>'
+      + '<rect class="eye r" x="60.5" y="31" width="9" height="28" rx="4.5" fill="#000"/></g></svg>';
+  }
+
+  var Eyes = (function(){
+    var mode = 'idle', locked = false, until = 0, hold = 0, timer = null, n = 0;
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function rnd(a, b){ return a + Math.random() * (b - a); }
+    function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
+    function look(x, y, o){
+      o = o || {};
+      EYE.x = x; EYE.y = y;
+      EYE.sl = o.sl !== undefined ? o.sl : (o.sy || 1);
+      EYE.sr = o.sr !== undefined ? o.sr : (o.sy || 1);
+      EYE.dl = o.dl || 0; EYE.dr = o.dr || 0;
+      var v = eyeVars(), all = document.querySelectorAll('.logo');
+      for (var i = 0; i < all.length; i++){ for (var k in v) all[i].style.setProperty(k, v[k]); }
+    }
+    function blink(){
+      var all = document.querySelectorAll('.logo'), i;
+      for (i = 0; i < all.length; i++) all[i].classList.add('blink');
+      setTimeout(function(){
+        var a = document.querySelectorAll('.logo');
+        for (var k = 0; k < a.length; k++) a[k].classList.remove('blink');
+      }, 130);
+    }
+    function idle(){
+      var r = Math.random();
+      if (r < .22){ blink(); if (Math.random() < .35) setTimeout(blink, 260); }
+      else if (r < .34) look(-10, rnd(-2, 2));
+      else if (r < .46) look(10, rnd(-2, 2));
+      else if (r < .54) look(rnd(-3, 3), 9);
+      else if (r < .61) look(rnd(-3, 3), -8);
+      else if (r < .69) look(pick([-9, 9]), pick([-7, 8]));
+      else if (r < .76){ look(0, 0, { sy:.55 }); setTimeout(function(){ look(0, 0); }, 420); }
+      else if (r < .83) look(rnd(-3, 3), -1, { dl:-3, dr:2 });
+      else if (r < .88){ look(0, 0, { sr:.25 }); setTimeout(function(){ look(0, 0); }, 320); }
+      else if (r < .93) look(0, -2, { sy:1.15 });
+      else if (r < .97){ look(-10, 0); setTimeout(function(){ look(10, 0); }, 300); }
+      else { look(0, 0); blink(); }
+      return rnd(450, 1300);
+    }
+    var TH = [[-9,-8,{}],[9,-9,{}],[0,-10,{ sy:.8 }],[-8,-5,{ dl:-3, dr:2 }],[8,-6,{ dl:2, dr:-3 }],[0,-3,{ sy:.6 }]];
+    function think(){
+      var p = TH[n++ % TH.length]; look(p[0], p[1], p[2]);
+      if (Math.random() < .3) setTimeout(blink, 300);
+      return rnd(650, 1100);
+    }
+    var AN = [];
+    [-6, 0, 6].forEach(function(y){ [-10, -5, 0, 5, 10].forEach(function(x){ AN.push([x, y]); }); });
+    function analyze(){
+      var p = AN[n++ % AN.length]; look(p[0], p[1], { sy:.8 });
+      if (n % 15 === 0) blink();
+      return 170;
+    }
+    function search(){
+      look(pick([-10, 10, -6, 6, 0, -10, 10]), rnd(-4, 4), { sy:1.1 });
+      if (Math.random() < .08) blink();
+      return rnd(110, 220);
+    }
+    function write(){
+      look(rnd(-7, 7), rnd(6, 10), Math.random() < .2 ? { dl:-2, dr:1 } : {});
+      if (Math.random() < .12) blink();
+      return rnd(170, 320);
+    }
+    function step(){
+      clearTimeout(timer);
+      var now = Date.now();
+      if (now < hold){ timer = setTimeout(step, hold - now + 20); return; }
+      if (!locked && mode !== 'idle' && now > until) mode = 'idle';
+      var d = mode === 'think' ? think() : mode === 'analyze' ? analyze() : mode === 'search' ? search() : mode === 'write' ? write() : idle();
+      timer = setTimeout(step, d);
+    }
+    if (!still) step();
+    return {
+      lock: function(m){ locked = true; mode = m; n = 0; if (!still) step(); },
+      unlock: function(){ locked = false; mode = 'idle'; if (!still) step(); },
+      isLocked: function(){ return locked; },
+      pulse: function(m, ms){
+        if (locked) return;
+        var changed = mode !== m; mode = m; n = changed ? 0 : n; until = Date.now() + ms;
+        if (changed && !still) step();
+      },
+      aha: function(){
+        if (still) return;
+        clearTimeout(timer); hold = Date.now() + 700;
+        look(0, -7, { sy:1.2 });
+        setTimeout(function(){ look(0, 2); blink(); }, 380);
+        timer = setTimeout(step, 720);
+      }
+    };
+  })();
+  var wrap = $('wrap'), chatEl = $('chat'), text = $('text'), sendBtn = $('sendBtn'), dlg = $('dlg'), list = $('list');
+  var busy = false, activeRequest = null, chats = [], cur = null;
+  function setSendState(stopping){
+    sendBtn.innerHTML = stopping
+      ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5"/></svg>'
+      : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+    sendBtn.setAttribute('aria-label', stopping ? 'Hentikan proses' : 'Kirim');
+    sendBtn.title = stopping ? 'Hentikan proses' : 'Kirim';
+  }
+
+  function load(k, d){ try { var v = localStorage.getItem(k); return v === null ? d : v; } catch(e){ return d; } }
+  function save(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+  function slim(m){
+    var c = { role:m.role, q:m.q, parts: m.parts.map(function(p){
+      if (p.inlineData) return { text:'[Gambar atau file tidak tersimpan setelah halaman ditutup]' };
+      if (p.text && p.text.length > 20000) return { text:p.text.slice(0,20000) + '\n[dipotong]' };
+      return p;
+    }) };
+    if (m.src) c.src = m.src;
+    if (m.att) c.att = m.att.map(function(a){ return { name:a.name }; });
+    return c;
+  }
+  function persist(){
+    save('gem_chats', JSON.stringify(chats.map(function(c){ return { id:c.id, title:c.title, msgs:c.msgs.map(slim) }; })));
+    save('gem_cur', cur || '');
+  }
+
+  var cfg = { key: load('gem_key',''), model: load('gem_model', DEFAULTS.model), sys: load('gem_sys', DEFAULTS.sys), imgmodel: load('gem_imgmodel','gemini-3.1-flash-image') };
+  try { chats = JSON.parse(load('gem_chats','[]')) || []; } catch(e){ chats = []; }
+  cur = load('gem_cur','') || null;
+  if (!chats.length){
+    try {
+      var old = JSON.parse(load('gem_hist','[]'));
+      if (old && old.length){ chats.push({ id:'c'+Date.now(), title: old[0].parts[0].text.slice(0,40), msgs: old }); cur = chats[0].id; persist(); }
+    } catch(e){}
+  }
+  function getChat(){ for (var i=0;i<chats.length;i++) if (chats[i].id === cur) return chats[i]; return null; }
+
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function inline(s){
+    s = s.replace(/\\&amp;/g,'&amp;').replace(/\\(?=\[(?:image|favicon)\b)/gi,'').replace(/\\?&lt;img\b[\s\S]*?\/?&gt;/gi,'')
+      .replace(/\(\s*\[(?:image|favicon)\]\(https?:\/\/[^)]*favicons[^)]*\)\s*\)/gi,'')
+      .replace(/\[(?:image|favicon)\s*([^\]]+)\]\((https?:\/\/[^)]+)\)/gi,'[$1]($2)')
+      .replace(/\[(?:image|favicon)\]\(https?:\/\/[^)]*favicons[^)]*\)/gi,'');
+    return s.replace(/&lt;img\b[\s\S]*?\bsrc=(?:"([^"]*)"|'([^']*)')[\s\S]*?\/?&gt;/gi,function(_,quoted,single){
+      var raw=(quoted||single||'').replace(/^\[(https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)$/i,'$2').replace(/&amp;/g,'&');
+      if(!/^https?:\/\//i.test(raw))return '';
+      var safe=raw.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+      return '<img class="site-icon" src="'+safe+'" alt="" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">';
+    }).replace(/\\?&lt;br\s*\/?&gt;/gi,'<br>').replace(/!\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/g,function(_,alt,url){
+      var safeUrl=url.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      var safeAlt=alt.replace(/"/g,'&quot;');
+      return '<a class="md-image-link" href="'+safeUrl+'" target="_blank" rel="noopener noreferrer"><img class="md-image-thumb" src="'+safeUrl+'" alt="'+safeAlt+'" loading="lazy" decoding="async"></a>';
+    }).replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,function(_,label,url){
+      var rawUrl = url.replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+      var host=''; try{host=new URL(rawUrl).hostname;}catch(e){}
+      var sourcePath=''; try{sourcePath=new URL(rawUrl).pathname.toLowerCase();}catch(e){}
+      if(isNonArticleSourcePath(sourcePath)){var blockedLabel=String(label).replace(/^(image|favicon)\\s*/i,'').trim();if(/^(baca selengkapnya|selengkapnya|read more|more)$/i.test(blockedLabel))blockedLabel=host;return '<span>'+blockedLabel+' — halaman rangkuman/arsip, bukan artikel langsung</span>';}
+      var ico=host?'<img class="site-icon" data-source-url="'+rawUrl.replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" src="'+(new URL('/',rawUrl).origin+'/favicon.ico')+'" alt="Ikon '+host.replace(/"/g,'')+'" loading="lazy" decoding="async">':'';
+      label=String(label).replace(/^(image|favicon)\s*/i,'').trim() || host;
+      if(/^(baca selengkapnya|selengkapnya|read more|more)$/i.test(label)) label=host;
+      var safeUrl = url.replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+      return '<a class="md-link" href="'+safeUrl+'" target="_blank" rel="noopener noreferrer">'+ico+label+'</a>';
+    }).replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>')
+      .replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<em>$2</em>')
+      .replace(/\[\[color=(#[0-9a-fA-F]{6})\]\]([\s\S]*?)\[\[\/color\]\]/g,'<span style="color:$1">$2</span>')
+      .replace(/Marta Edi Sutrisno/gi,'<span class="marta-name">Marta Edi Sutrisno</span>');
+  }
+  function isNonArticleSourcePath(path){
+    path=String(path||'').toLowerCase();
+    while(path.length>1&&path.charAt(path.length-1)==='/')path=path.slice(0,-1);
+    if(!path||path==='/')return true;
+    if(/(^|\/)(tag|tags|topic|topics|category|categories|search|cari|author|authors|archive|archives|hub|today|daily|digest|roundup|briefing)(\/|$)/i.test(path))return true;
+    if(/\/(?:19|20)\d{2}(?:[-/]\d{1,2}){0,2}$/i.test(path))return true;
+    var parts=path.split('/').filter(Boolean);
+    return parts.length===1&&/^(berita|news|ai|technology|teknologi|artikel|latest|terbaru)$/i.test(parts[0]);
+  }
+  function blocks(t){
+    var out='',mode='',liOpen=false,lines=t.split('\n');
+    function close(){
+      if(mode==='ol'&&liOpen){out+='</li>';liOpen=false;}
+      if(mode){out+='</'+mode+'>';mode='';}
+    }
+    function cells(line){return line.trim().replace(/^\|/,'').replace(/\|$/,'').split('|').map(function(v){return v.trim();});}
+    function isSep(line){return /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line.trim());}
+    function isSourceLine(line){var x=line.trim().replace(/^\\+/,'').replace(/^[-*]\s+/,'');return /^\[[^\]]+\]\(https?:\/\/[^)]+\)/i.test(x)||/(?:<img\b|&lt;img\b)[\s\S]*?(?:https?:\/\/|favicons)/i.test(x)||/\[(?:image|favicon)[^\]]*\]\(https?:\/\//i.test(x);}
+    lines.forEach(function(line,i){
+      var m;
+      if(line.indexOf('|')!==-1 && i+1<lines.length && isSep(lines[i+1])){
+        close();var heads=cells(line),rows=[],j=i+2;
+        while(j<lines.length&&lines[j].trim()&&lines[j].indexOf('|')!==-1&&!isSep(lines[j])){rows.push(cells(lines[j]));j++;}
+        out+='<div class="md-table-wrap"><table class="md-table"><thead><tr>';
+        heads.forEach(function(c){out+='<th>'+inline(c)+'</th>';});
+        out+='</tr></thead><tbody>';
+        rows.forEach(function(row){out+='<tr>';heads.forEach(function(_,k){out+='<td>'+inline(row[k]||'')+'</td>';});out+='</tr>';});
+        out+='</tbody></table></div>';i=j-1;
+      }else if(isSep(line)){
+        close();var j=i+1;
+        while(j<lines.length&&lines[j].trim()&&lines[j].indexOf('|')!==-1)j++;
+        i=j-1;
+      }else if(mode==='ol'&&liOpen&&isSourceLine(line)){
+        out+='<div class="list-source">'+inline(line.trim().replace(/^[-*]\s+/,''))+'</div>';
+      }else if((m=line.match(/^\s*[-*]\s+\[([ xX])\]\s+(.*)/))){
+        close();var done=m[1].toLowerCase()==='x';out+='<ul><li class="task"><input type="checkbox" disabled '+(done?'checked':'')+'>'+inline(m[2])+'</li></ul>';
+      }else if((m=line.match(/^\s*[-*]\s+(.*)/))){
+        close();out+='<ul><li>'+inline(m[1])+'</li></ul>';
+      }else if((m=line.match(/^\s*\d+[.)]\s+(.*)/))){
+        if(mode!=='ol'){close();out+='<ol>';mode='ol';}
+        if(liOpen)out+='</li>';
+        out+='<li>'+inline(m[1]);liOpen=true;
+      }else if((m=line.match(/^(#{1,4})\s+(.*)/))){
+        close();out+='<p>'+inline(m[2])+'</p>';
+      }else if(!line.trim()){
+        var nextIndex=i+1;while(nextIndex<lines.length&&!lines[nextIndex].trim())nextIndex++;
+        var nextLine=lines[nextIndex]||'';
+        if(!(mode==='ol'&&(/^\s*\d+[.)]\s+/.test(nextLine)||isSourceLine(nextLine))))close();
+      }else{close();out+='<p>'+inline(line)+'</p>';}
+    });close();return out;
+  }
+  function md(src){
+    var parts=esc(src).split(String.fromCharCode(96,96,96)),out='';
+    parts.forEach(function(p,i){
+      if(i%2){
+        var m=p.match(/^(\w+)?\n/),lang=m&&m[1]?m[1].toLowerCase():'html',code=m?p.slice(m[0].length):p;
+        if(lang==='mermaid')out+='<div class="mermaid-block">'+code.replace(/\n$/,'')+'</div>';
+        else if(lang==='edhychart'||lang==='chart')out+='<pre class="edhychart-source"><code>'+code.replace(/\n$/,'')+'</code></pre>';
+        else out+='<pre><span class="code-lang">'+lang.toUpperCase()+'</span><button type="button" class="code-copy">Salin</button><code class="language-'+lang+'">'+code.replace(/\n$/,'')+'</code></pre>';
+      }else out+=blocks(p);
+    });return out;
+  }
+  function enhanceMarkdown(root){
+    if(window.hljs) root.querySelectorAll('pre code:not(.edhychart-source code)').forEach(function(c){try{window.hljs.highlightElement(c);}catch(e){}});
+    root.querySelectorAll('.mermaid-block').forEach(function(node){
+      node.classList.add('mermaid');
+      if(window.mermaid){try{window.mermaid.run({nodes:[node]});}catch(e){node.classList.add('mermaid-error');}}
+    });
+    root.querySelectorAll('pre.edhychart-source').forEach(function(pre){
+      var code=pre.querySelector('code'),cfg;
+      try{cfg=JSON.parse(code.textContent);}catch(e){pre.classList.add('chart-error');return;}
+      var canvas=document.createElement('canvas'),wrap=document.createElement('div');
+      wrap.className='edhychart-wrap';wrap.appendChild(canvas);pre.replaceWith(wrap);
+      try{
+        if(!window.Chart)throw new Error('Chart.js tidak tersedia');
+        var type=cfg.type||cfg.chartType||'bar',data=cfg.data||{labels:cfg.labels||[],datasets:cfg.datasets||[{label:cfg.label||'Data',data:cfg.values||[]}]};
+        if(!data.datasets&&cfg.series)data.datasets=cfg.series.map(function(x){return {label:x.label||x.name||'Data',data:x.data||[]};});
+        new Chart(canvas,{type:type,data:data,options:Object.assign({responsive:true,maintainAspectRatio:false},cfg.options||{})});
+      }catch(e){wrap.textContent='Grafik tidak dapat ditampilkan: '+e.message;}
+    });
+    root.querySelectorAll('.code-copy').forEach(function(b){b.addEventListener('click',function(){
+      var c=b.parentNode.querySelector('code'),v=c?c.textContent:'';
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(v).then(function(){b.textContent='Tersalin';setTimeout(function(){b.textContent='Salin';},1300);});
+    });});
+  }
+
+  var pending = [], imageMode = false, searchOn = false, locOn = false, loc = null, lensPrompt = '', lensWeb = false;
+  function el(tag, cls, txt){ var d = document.createElement(tag); if (cls) d.className = cls; if (txt) d.textContent = txt; return d; }
+  function userText(m){ return m.q !== undefined ? m.q : m.parts.map(function(p){ return p.text || ''; }).join(''); }
+
+  function addUser(m){
+    var d = el('div','msg user');
+    (m.att || []).forEach(function(a){
+      if (a.preview){ var im = el('img','thumb'); im.src = a.preview; im.alt = a.name; d.appendChild(im); }
+      else d.appendChild(el('div','file','\ud83d\udcce ' + a.name));
+    });
+    var t = userText(m); if (t) d.appendChild(el('div','',t));
+    wrap.appendChild(d);
+  }
+  var SOURCE_META_API = 'https://xbot-gamma-hazel.vercel.app/api/research';
+  function visualTopic(question, answer){
+    var q=String(question||'').toLowerCase(), a=String(answer||'').toLowerCase();
+    return /\b(mesin|komponen|onderdil|perbaikan|memperbaiki|cara kerja|langkah|tutorial|pasang|instalasi|rangka|alat|perangkat|produk|kamera|ponsel|laptop|kendaraan|mobil|motor|tanaman|hewan|resep|masakan|makanan|wisata|tempat|bangunan|arsitektur|desain|pakaian|fashion|anatomi|peta|diagram|contoh visual)\b/.test(q) ||
+      /\b(cara memperbaiki|langkah perbaikan|bagian-bagian|komponen utama|lokasi wisata|resep masakan)\b/.test(a);
+  }
+  function sourceKey(value){
+    try{var u=new URL(value);u.hash='';u.search='';return (u.origin+u.pathname.replace(/\/$/,'')).toLowerCase();}catch(e){return '';}
+  }
+  function enrichSourceVisuals(root, sourceList, answer, question){
+    var urls=[], seen=Object.create(null);
+    root.querySelectorAll('img[data-source-url]').forEach(function(img){img.onerror=function(){if(!this.dataset.fallback){this.dataset.fallback='1';try{var host=new URL(this.getAttribute('data-source-url')).hostname;this.src='https://www.google.com/s2/favicons?domain='+encodeURIComponent(host)+'&sz=32';}catch(e){this.style.display='none';}}else this.style.display='none';};});
+    function addUrl(u){var k=sourceKey(u);if(k&&!seen[k]&&urls.length<8){seen[k]=true;urls.push(u);}}
+    (sourceList||[]).forEach(function(z){if(z&&z.uri)addUrl(z.uri);});
+    var linkRe=/!?\[[^\]]*\]\((https?:\/\/[^\s)]+)\)/gi, match;
+    while((match=linkRe.exec(answer||''))&&urls.length<8)addUrl(match[1]);
+    if(!urls.length)return;
+    window.fetch(SOURCE_META_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'metadata',urls:urls})})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(data){
+        if(!data||!Array.isArray(data.metadata))return;
+        var visual=visualTopic(question,answer), shown=0;
+        data.metadata.forEach(function(meta){
+          var key=sourceKey(meta.url);if(!key)return;
+          var iconUrl=meta.favicon||'';
+          var sourceCard=root.querySelector('.src-card[data-source-key="'+key.replace(/"/g,'')+'"]');
+          if(sourceCard&&meta.title){
+            var titleNode=sourceCard.querySelector('.src-meta strong');
+            if(titleNode)titleNode.textContent=String(meta.title).trim();
+            sourceCard.setAttribute('aria-label','Buka sumber: '+String(meta.title).trim()+' ('+new URL(meta.url).hostname+')');
+            sourceCard.title=String(meta.title).trim()+' — '+new URL(meta.url).hostname;
+          }
+          root.querySelectorAll('img[data-source-url]').forEach(function(img){
+            if(sourceKey(img.getAttribute('data-source-url'))!==key)return;
+            if(iconUrl){img.onerror=function(){if(this.dataset.fallback!=='google'){this.dataset.fallback='google';var h=new URL(meta.url).hostname;this.src='https://www.google.com/s2/favicons?domain='+encodeURIComponent(h)+'&sz=64';}else this.style.display='none';};img.src=iconUrl;}
+          });
+          if(meta.image&&shown<3){
+            var card=root.querySelector('.src-card[data-source-key="'+key.replace(/"/g,'')+'"]');
+            if(card&&!card.querySelector('.src-preview-thumb')){
+              var thumb=el('img','src-preview-thumb');thumb.src=meta.image;thumb.alt='Gambar terkait: '+(meta.title||'');thumb.loading='lazy';thumb.decoding='async';
+              thumb.onerror=function(){this.remove();};card.appendChild(thumb);shown++;
+            }
+          }
+        });
+      }).catch(function(){});
+  }
+
+  function addBot(m, typewrite){
+    var d = el('div','msg bot'), all = '';
+    m.parts.forEach(function(p){
+      if (p.text){
+        all += p.text;
+        var s = el('div'); d.appendChild(s);
+        if (typewrite){
+          var raw = p.text, pos = 0;
+          (function reveal(){
+            pos = Math.min(pos + 12, raw.length);
+            s.textContent = raw.slice(0, pos);
+            if (pos < raw.length) setTimeout(reveal, 16);
+            else { s.innerHTML = md(raw); enhanceMarkdown(s); enrichSourceVisuals(d,citationSources,all,question); focusLatestExchange(); }
+          })();
+        } else { s.innerHTML = md(p.text); enhanceMarkdown(s); }
+      }
+      else if (p.inlineData){        var src = 'data:' + p.inlineData.mimeType + ';base64,' + p.inlineData.data;
+        var im = el('img','gen'); im.src = src; im.alt = 'Gambar buatan bot'; d.appendChild(im);
+        var a = el('a','copy','Simpan gambar'); a.href = src; a.download = 'gambar-martaedhyx.png'; a.style.color = 'inherit'; d.appendChild(a);
+      }
+    });
+    var citationSources=(m.src||[]).slice();
+    var citationRe=/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, citationMatch;
+    while((citationMatch=citationRe.exec(all))){
+      if(all.charAt(citationMatch.index-1)==='!')continue;
+      var citationUrl=citationMatch[2], citationKey=sourceKey(citationUrl);
+      if(citationKey&&!citationSources.some(function(z){return sourceKey(z.uri)===citationKey;}))citationSources.push({title:citationMatch[1],uri:citationUrl});
+    }
+    if (citationSources.length){
+      var sd = el('div','src'); sd.appendChild(el('span','src-heading','Sumber'));
+      var seenSourceUris=Object.create(null);
+      citationSources.slice(0,8).forEach(function(z){
+        var a2=el('a','src-card'),host='',canonical='';
+        try{
+          var su=new URL(z.uri); if(!/^https?:$/.test(su.protocol)||isNonArticleSourcePath(su.pathname))return;
+          su.hash=''; su.search=''; canonical=su.href.replace(/\/$/,'').toLowerCase();
+        }catch(e){return;}
+        if(seenSourceUris[canonical])return; seenSourceUris[canonical]=true;
+        a2.href=z.uri; a2.target='_blank'; a2.rel='noopener noreferrer'; a2.setAttribute('data-source-key',canonical);
+        host=(new URL(z.uri)).hostname.replace(/^www\./,'');
+        if(host){
+          var ico=el('img','src-thumb'); ico.src=new URL('/favicon.ico',z.uri).href; ico.alt='Logo '+host; ico.loading='lazy'; ico.decoding='async'; ico.setAttribute('data-source-url',z.uri); ico.onerror=function(){if(!this.dataset.fallback){this.dataset.fallback='1';this.src='https://www.google.com/s2/favicons?domain='+encodeURIComponent(host)+'&sz=64';}else this.style.display='none';}; a2.appendChild(ico);
+        }
+        var sourceTitle=String(z.title||host||'Situs sumber').replace(/^(image|favicon)\s*/i,'').trim() || host || 'Situs sumber';
+        var meta=el('span','src-meta'); meta.appendChild(el('strong','',sourceTitle));
+        if(host)meta.appendChild(el('small','',host));
+        a2.appendChild(meta); sd.appendChild(a2);
+      });
+      d.appendChild(sd);
+    }
+    if (all){
+      var copyIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h2"/></svg>';
+      var checkIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>';
+      var micIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
+      var b = el('button','copy'); b.type = 'button'; b.innerHTML = copyIcon; b.title = 'Salin'; b.setAttribute('aria-label','Salin jawaban');
+      b.addEventListener('click', function(){
+        try { navigator.clipboard.writeText(all).then(function(){ b.innerHTML = checkIcon; b.title = 'Tersalin'; setTimeout(function(){ b.innerHTML = copyIcon; b.title = 'Salin'; }, 1500); }); } catch(e){}
+      });
+      d.appendChild(b);
+      if (window.speechSynthesis){
+        var sp = el('button','copy'); sp.type = 'button'; sp.innerHTML = micIcon; sp.title = 'Dengarkan jawaban'; sp.setAttribute('aria-label','Dengarkan jawaban');
+        sp.addEventListener('click', function(){
+          if (speechSynthesis.speaking){ speechSynthesis.cancel(); sp.title = 'Dengarkan jawaban'; return; }
+          var u = new SpeechSynthesisUtterance(all.replace(/[`*#]/g,'')); u.lang = 'id-ID';
+          u.onend = function(){ sp.title = 'Dengarkan jawaban'; };
+          sp.title = 'Berhenti mendengarkan'; speechSynthesis.speak(u);
+        });
+        d.appendChild(sp);
+      }
+      var actionIcon = function(path){ return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+path+'</svg>'; };
+      var like = el('button','copy'); like.type = 'button';
+      var likeOn = actionIcon('<path d="M7 10v12H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3Zm0 0 5-8a3 3 0 0 1 2 3v3h5a2 2 0 0 1 2 2l-2 9a3 3 0 0 1-3 2H7"/>');
+      var likeOff = actionIcon('<path d="M7 10v12H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3Zm0 0 5-8a3 3 0 0 1 2 3v3h5a2 2 0 0 1 2 2l-2 9a3 3 0 0 1-3 2H7"/>');
+      like.innerHTML = m.feedback === 'like' ? likeOn : likeOff;
+      like.title = m.feedback === 'like' ? 'Hapus suka' : 'Suka jawaban';
+      like.setAttribute('aria-label',like.title);
+      like.style.color = m.feedback === 'like' ? '#7dd3fc' : '';
+      like.addEventListener('click', function(){
+        m.feedback = m.feedback === 'like' ? '' : 'like';
+        like.innerHTML = m.feedback === 'like' ? likeOn : likeOff;
+        like.title = m.feedback === 'like' ? 'Hapus suka' : 'Suka jawaban';
+        like.setAttribute('aria-label',like.title);
+        like.style.color = m.feedback === 'like' ? '#7dd3fc' : '';
+        persist();
+      });
+      d.appendChild(like);
+      var share = el('button','copy'); share.type = 'button';
+      share.innerHTML = actionIcon('<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.7 6.6-4.4M8.7 13.3l6.6 4.4"/>');
+      share.title = 'Bagikan jawaban'; share.setAttribute('aria-label','Bagikan jawaban');
+      share.addEventListener('click', function(){
+        var payload = { title:'Jawaban Edhy', text:all };
+        if (navigator.share) navigator.share(payload).catch(function(){});
+        else if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(all).then(function(){ share.title = 'Tersalin untuk dibagikan'; setTimeout(function(){ share.title = 'Bagikan jawaban'; },1500); });
+      });
+      d.appendChild(share);
+    }
+    wrap.appendChild(d);
+    var current=getChat(), question='';
+    if(current&&current.msgs){for(var qi=current.msgs.length-1;qi>=0;qi--){if(current.msgs[qi].role==='user'){question=userText(current.msgs[qi]);break;}}}
+    if(!typewrite)enrichSourceVisuals(d,citationSources,all,question);
+  }
+  function addErr(t){ wrap.appendChild(el('div','msg err',t)); chatEl.scrollTop = chatEl.scrollHeight; }
+
+  function renderSide(){
+    list.innerHTML = '';
+    if (!chats.length){ list.appendChild(el('li','none','Belum ada chat')); return; }
+    chats.slice().reverse().forEach(function(c){
+      var li = el('li', c.id === cur ? 'on' : '');
+      var b = el('button','ci',c.title); b.type = 'button'; b.title = c.title;
+      b.addEventListener('click', function(){ cur = c.id; persist(); render(); closeMenu(); });
+      var x = el('button','del','\u00d7'); x.type = 'button'; x.setAttribute('aria-label','Hapus chat');
+      x.addEventListener('click', function(){
+        if (!confirm('Hapus chat ini?')) return;
+        chats = chats.filter(function(k){ return k.id !== c.id; });
+        if (cur === c.id) cur = null;
+        persist(); render();
+      });
+      li.appendChild(b); li.appendChild(x); list.appendChild(li);
+    });
+  }
+
+  var lastGreeting = '';
+  function updateGreeting(){
+    var hourText = new Intl.DateTimeFormat('en-GB', {
+      timeZone:'Asia/Jakarta', hour:'2-digit', hourCycle:'h23'
+    }).format(new Date());
+    var hour = Number(hourText);
+    var period = hour >= 4 && hour < 11 ? 'pagi'
+      : hour >= 11 && hour < 15 ? 'siang'
+      : hour >= 15 && hour < 18 ? 'sore' : 'malam';
+    var greetings = [
+      'Lagi sibuk apa hari ini?',
+      'Bagaimana aktivitasmu ' + period + ' ini?',
+      'Ada cerita menarik hari ini?',
+      'Mau mencari tahu sesuatu yang baru?',
+      'Apa yang bisa kita kerjakan bersama hari ini?',
+      'Ada hal yang sedang kamu pikirkan?',
+      'Siap membantu. Mau mulai dari mana?',
+      'Hari ini ingin ngobrol tentang apa?',
+      'Punya rencana menarik untuk hari ini?',
+      'Butuh bantuan menyelesaikan sesuatu?',
+      'Apa kabar? Semoga harimu menyenangkan.',
+      'Ada pertanyaan yang ingin kamu pecahkan?'
+    ];
+    var greeting = $('greeting');
+    if (!greeting) return;
+    var next = lastGreeting;
+    while (greetings.length > 1 && next === lastGreeting){
+      next = greetings[Math.floor(Math.random() * greetings.length)];
+    }
+    lastGreeting = next;
+    greeting.textContent = next;
+  }
+
+  function focusLatestExchange(){
+    function applyFocus(){
+      var questions = wrap.querySelectorAll('.msg.user');
+      var latestQuestion = questions.length ? questions[questions.length - 1] : null;
+      if (!latestQuestion) return;
+      var questionTop = latestQuestion.getBoundingClientRect().top;
+      var chatTop = chatEl.getBoundingClientRect().top;
+      chatEl.scrollTop += questionTop - chatTop - 8;
+    }
+    requestAnimationFrame(function(){
+      applyFocus();
+      setTimeout(applyFocus, 100);
+      setTimeout(applyFocus, 350);
+    });
+  }
+
+  function render(animateLastBot){
+    var c = getChat();
+    $('title').textContent = '';
+    wrap.innerHTML = '';
+    if (!c || !c.msgs.length){
+      var h = el('div','hello');
+      h.innerHTML = logo(43.2) + '<h1 id="greeting"></h1>';
+      updateGreeting();
+      wrap.appendChild(h);
+    } else {
+      for (var j = 0; j < c.msgs.length; j++){
+        if (c.msgs[j].role === 'user') addUser(c.msgs[j]);
+        else if (c.msgs[j].role === 'model') addBot(c.msgs[j], !!animateLastBot && j === c.msgs.length - 1);
+      }
+    }
+    renderSide();
+    if (c && c.msgs.length) focusLatestExchange();
+    else chatEl.scrollTop = 0;
+  }
+
+  function renderChips(){
+    var box = $('chips'); box.innerHTML = '';
+    if (imageMode){
+      var m = el('div','chip mode'); m.appendChild(el('span','','Mode gambar'));
+      var x2 = el('button','','\u00d7'); x2.type = 'button'; x2.setAttribute('aria-label','Matikan mode gambar');
+      x2.addEventListener('click', function(){ imageMode = false; renderChips(); });
+      m.appendChild(x2); box.appendChild(m);
+    }
+    function mc(label, off){
+      var m = el('div','chip mode'); m.appendChild(el('span','',label));
+      var x = el('button','','\u00d7'); x.type = 'button'; x.setAttribute('aria-label','Matikan ' + label);
+      x.addEventListener('click', function(){ off(); renderChips(); });
+      m.appendChild(x); box.appendChild(m);
+    }
+    if (locOn) mc(loc ? 'Lokasi aktif' : 'Mencari lokasi...', function(){ locOn = false; });
+    if (searchOn) mc('Cari di web', function(){ searchOn = false; });
+    pending.forEach(function(a, i){
+      var c = el('div','chip');
+      if (a.preview){ var im = el('img'); im.src = a.preview; im.alt = ''; c.appendChild(im); }
+      c.appendChild(el('span','',a.name));
+      var x = el('button','','\u00d7'); x.type = 'button'; x.setAttribute('aria-label','Hapus lampiran');
+      x.addEventListener('click', function(){ pending.splice(i,1); renderChips(); });
+      c.appendChild(x); box.appendChild(c);
+    });
+    text.placeholder = imageMode ? 'Jelaskan gambar yang mau dibuat...' : 'Ketik pesan...';
+  }
+
+  var TEXT_EXT = 'txt md csv tsv json xml html htm css js ts jsx tsx py java c h cpp cs go rs rb php sql yml yaml toml ini log sh bat r swift kt'.split(' ');
+  var MIME_EXT = { pdf:'application/pdf', mp3:'audio/mpeg', wav:'audio/wav', m4a:'audio/mp4', aac:'audio/aac', ogg:'audio/ogg', flac:'audio/flac',
+    mp4:'video/mp4', mov:'video/quicktime', webm:'video/webm', png:'image/png', jpg:'image/jpeg', jpeg:'image/jpeg', webp:'image/webp', heic:'image/heic', gif:'image/gif' };
+  function readAs(f, how){
+    return new Promise(function(ok, no){ var r = new FileReader(); r.onload = function(){ ok(r.result); }; r.onerror = no; r[how](f); });
+  }
+  async function addFile(f){
+    var ext = (f.name.split('.').pop() || '').toLowerCase();
+    var mime = f.type || MIME_EXT[ext] || '';
+    var media = /^(image|video|audio)\//.test(mime) || mime === 'application/pdf';
+    if (media){
+      var used = pending.reduce(function(n, a){ return n + a.size; }, 0);
+      if (used + f.size > 15 * 1024 * 1024) return '"' + f.name + '" terlalu besar. Total lampiran maksimal sekitar 15 MB.';
+      var url = await readAs(f, 'readAsDataURL');
+      pending.push({ name:f.name, size:f.size, part:{ inlineData:{ mimeType:mime, data:url.split(',')[1] } }, preview: mime.indexOf('image/') === 0 ? url : null });
+      return '';
+    }
+    var txt = null;
+    if (ext === 'docx' && window.mammoth){
+      txt = (await window.mammoth.extractRawText({ arrayBuffer: await readAs(f, 'readAsArrayBuffer') })).value;
+    } else if (/^(xlsx|xls|xlsm|ods)$/.test(ext) && window.XLSX){
+      var wb = window.XLSX.read(await readAs(f, 'readAsArrayBuffer'), { type:'array' });
+      txt = wb.SheetNames.map(function(n){ return '## Sheet: ' + n + '\n' + window.XLSX.utils.sheet_to_csv(wb.Sheets[n]); }).join('\n\n');
+    } else if (mime.indexOf('text/') === 0 || TEXT_EXT.indexOf(ext) >= 0 || /json|xml|javascript/.test(mime)){
+      txt = await readAs(f, 'readAsText');
+    }
+    if (txt === null) return 'Format "' + f.name + '" belum bisa dibaca. Coba simpan sebagai PDF atau teks.';
+    if (txt.length > 200000) txt = txt.slice(0, 200000) + '\n[dipotong]';
+    pending.push({ name:f.name, size:f.size, part:{ text:'[Isi file: ' + f.name + ']\n' + txt }, preview:null });
+    return '';
+  }
+  async function onFiles(files){
+    var errs = [];
+    Eyes.pulse('analyze', 1800);
+    for (var i = 0; i < files.length; i++){
+      try { var e = await addFile(files[i]); if (e) errs.push(e); } catch(x){ errs.push('Gagal membaca "' + files[i].name + '".'); }
+    }
+    renderChips();
+    if (errs.length) addErr(errs.join(' '));
+  }
+
+  function getLoc(){
+    return new Promise(function(ok){
+      if (!navigator.geolocation){ ok({ error:0 }); return; }
+      navigator.geolocation.getCurrentPosition(
+        function(p){ ok({ lat:p.coords.latitude, lng:p.coords.longitude, acc:Math.round(p.coords.accuracy) }); },
+        function(e){ ok({ error:e.code }); },
+        { enableHighAccuracy:false, timeout:12000, maximumAge:60000 });
+    });
+  }
+  async function enableLoc(){
+    locOn = true; loc = null; renderChips();
+    var r = await getLoc();
+    if (r.lat !== undefined) loc = r;
+    else {
+      locOn = false;
+      addErr(r.error === 1 ? 'Izin lokasi ditolak. Aktifkan di Pengaturan iPhone > Privasi > Layanan Lokasi > Situs Web Safari.' : 'Lokasi tidak bisa didapat. Pastikan GPS menyala dan coba lagi.');
+    }
+    renderChips();
+  }
+
+  function shouldSearchWeb(q){
+    var s = String(q || '').toLowerCase();
+    return /\b(sekarang|terbaru|terkini|hari ini|kemarin|minggu ini|bulan ini|tahun ini|update|berita|harga|tarif|biaya|kurs|nilai tukar|jadwal|skor|hasil pertandingan|cuaca|prakiraan|alamat|lokasi|jam buka|peraturan terbaru|undang-undang terbaru|regulasi terbaru|rilis terbaru|versi terbaru|sumber|referensi|riset|penelitian terbaru|bandingkan|telusuri|cari di internet|cari di web)\b/.test(s) || /https?:\/\//i.test(s);
+  }
+
+  function errorText(status, msg, webActive){
+    var hint = imageMode ? ' Model gambar sering butuh akun berbayar. Cek nama model gambar di Pengaturan.' : '';
+    if (status === 400 && /API key/i.test(msg)) return 'API key tidak valid. Periksa lagi di Pengaturan.';
+    if (!imageMode && (locOn || searchOn || webActive) && (status === 400 || status === 403 || status === 429)) hint = ' Fitur Lokasi atau pencarian web mungkin tidak tersedia pada kuota atau akses API saat ini. Coba lagi nanti atau periksa akses API.';
+    if (status === 403) return 'API key ditolak atau tidak punya akses ke model ini.' + hint;
+    if (status === 404) return 'Model tidak ditemukan. Ganti nama model di Pengaturan.' + hint;
+    if (status === 413) return 'Lampiran terlalu besar. Kurangi ukuran file atau buka Chat baru.';
+    if (status === 429) return 'Batas pemakaian gratis tercapai. Tunggu satu menit lalu coba lagi.' + hint;
+    return 'Terjadi kesalahan (' + status + '). ' + msg + hint;
+  }
+  function toContents(msgs){
+    return msgs.map(function(m){
+      return { role:m.role, parts: m.parts.map(function(p){ return (p.inlineData && m.role === 'model') ? { text:'[gambar]' } : p; }) };
+    });
+  }
+
+  async function send(){
+    var q = text.value.trim();
+    var localCommand = q.toLocaleLowerCase('id-ID').trim().replace(/\s+/g,' ').replace(/[.!?]+$/,'');
+    var openComputer = /^(?:(?:edhy)[, ]+)?(?:tolong\s+)?(?:buka|tampilkan|jalankan)\s+(?:(?:panel|dasbor)\s+)?(?:edhyx\s+)?(?:computer|komputer|monitoring(?:\s+sistem)?|kontrol\s+sistem)(?:\s+sekarang)?$/i.test(localCommand);
+    var openTerminal = /^(?:(?:edhy)[, ]+)?(?:tolong\s+)?(?:buka|akses|jalankan|masuk ke)\s+terminal$/i.test(localCommand);
+    if (openComputer) {
+      text.value = ''; text.style.height = 'auto';
+      if (window.EdhyTerminal && typeof window.EdhyTerminal.openMonitoring === 'function') {
+        window.EdhyTerminal.openMonitoring();
+      } else {
+        addErr('Panel EdhyX Computer belum termuat. Muat ulang halaman lalu coba lagi.');
+      }
+      return;
+    }
+    if (openTerminal) {
+      text.value = ''; text.style.height = 'auto';
+      if (window.EdhyTerminal && typeof window.EdhyTerminal.open === 'function') window.EdhyTerminal.open();
+      else addErr('Terminal belum termuat. Muat ulang halaman lalu coba lagi.');
+      return;
+    }
+    if ((!q && !pending.length) || busy) return;
+    if (!cfg.key){ openSettings(); return; }
+    if (imageMode && !q){ addErr('Tulis dulu gambar apa yang mau dibuat.'); return; }
+    busy = true; activeRequest = new AbortController(); setSendState(true);
+    var files = pending, asImage = imageMode;
+    var useWeb = !asImage && (searchOn || shouldSearchWeb(q));
+    pending = []; renderChips();
+    text.value = ''; text.style.height = 'auto';
+
+    var c = getChat(), fresh = false;
+    if (!c){ c = { id:'c'+Date.now(), title:(q || files[0].name).slice(0,40), msgs: [] }; chats.push(c); cur = c.id; fresh = true; }
+    var parts = files.map(function(f){ return f.part; });
+    parts.push({ text: q || 'Tolong baca lampiran ini dan jelaskan isinya.' });
+    c.msgs.push({ role:'user', q:q, parts:parts, att: files.map(function(f){ return { name:f.name, preview:f.preview }; }) });
+    render();
+    Eyes.lock(files.length ? 'analyze' : 'think');
+
+    var wait = el('div','msg bot typing'); wrap.appendChild(wait);
+    wait.innerHTML = logo(21.3) + '<span></span>';
+    var txt = wait.lastChild;
+    var ph = [], stTimer = null, pi = 0;
+    if (asImage){
+      if (files.length) ph.push(['membaca lampiran...', 900, 'analyze']);
+      ph.push(['memahami permintaan...', 900, 'think'], ['menganalisis permintaan...', 900, 'analyze'], ['membuat gambar...', 1200, 'write'], ['menyempurnakan detail...', 0, 'analyze']);
+    } else {
+      if (files.length) ph.push(['membaca lampiran...', 850, 'analyze'], ['menganalisis lampiran...', 850, 'analyze'], ['mengambil informasi dari lampiran...', 850, 'analyze']);
+      ph.push(
+        ['menerima pertanyaan...', 650, 'think'],
+        ['memahami pertanyaan...', 650, 'think'],
+        ['mengidentifikasi maksud pertanyaan...', 650, 'think'],
+        ['mengumpulkan konteks...', 650, 'think'],
+        ['mencari informasi yang relevan...', 650, 'search'],
+        ['menentukan pendekatan...', 650, 'think'],
+        ['berpikir...', 650, 'think'],
+        ['menganalisis...', 650, 'analyze'],
+        ['memecahkan masalah...', 650, 'analyze'],
+        ['melakukan penalaran...', 650, 'think'],
+        ['memeriksa fakta...', 650, 'analyze']
+      );
+      if (locOn) ph.push(['memeriksa lokasi...', 750, 'search']);
+      if (useWeb) ph.push(
+        ['menelusuri web...', 750, 'search'],
+        ['mencari sumber...', 750, 'search'],
+        ['membuka halaman sumber...', 750, 'search'],
+        ['membaca sumber...', 750, 'analyze'],
+        ['mengambil informasi...', 750, 'analyze'],
+        ['memeriksa tautan...', 750, 'search'],
+        ['memeriksa tanggal informasi...', 750, 'analyze'],
+        ['memverifikasi sumber...', 750, 'analyze'],
+        ['membandingkan sumber...', 750, 'analyze'],
+        ['menilai kredibilitas sumber...', 750, 'analyze'],
+        ['mengumpulkan referensi...', 750, 'search'],
+        ['merangkum hasil penelusuran...', 750, 'analyze']
+      );
+      ph.push(
+        ['mengolah informasi...', 650, 'analyze'],
+        ['menyusun informasi...', 650, 'analyze'],
+        ['memeriksa konsistensi...', 650, 'analyze'],
+        ['memeriksa kelengkapan...', 650, 'analyze'],
+        ['melakukan perhitungan...', 650, 'analyze'],
+        ['mengolah data...', 650, 'analyze'],
+        ['menarik kesimpulan...', 650, 'think'],
+        ['menyusun jawaban...', 650, 'write'],
+        ['memeriksa jawaban...', 650, 'analyze'],
+        ['menyempurnakan jawaban...', 650, 'write'],
+        ['menulis jawaban...', 650, 'write'],
+        ['menyelesaikan jawaban...', 0, 'write']
+      );
+    }
+    (function showPhase(){
+      var cur2 = ph[pi]; txt.textContent = 'edhyx ' + cur2[0]; Eyes.lock(cur2[2]);
+      if (cur2[1] && pi < ph.length - 1){ pi++; stTimer = setTimeout(showPhase, cur2[1]); }
+    })();
+    chatEl.scrollTop = chatEl.scrollHeight;
+
+    function fail(msg){
+      c.msgs.pop();
+      if (fresh){ chats = chats.filter(function(k){ return k.id !== c.id; }); cur = null; }
+      persist(); render(); addErr(msg);
+      text.value = q; pending = files; renderChips();
+    }
+
+    try {
+      if (locOn && !asImage){
+        var r2 = await getLoc();
+        if (r2.lat !== undefined) loc = r2;
+      }
+
+      if (!activeRequest || activeRequest.signal.aborted){
+        if (wait.parentNode) wait.parentNode.removeChild(wait);
+        persist();
+        text.value = q; pending = files; renderChips();
+        return;
+      }
+
+      var model = asImage ? cfg.imgmodel : cfg.model;
+      var styleGuide = '\n\nTAMPILAN JAWABAN EDHYX: Secara default, jawab dalam teks biasa dengan paragraf natural. JANGAN membuat format Markdown secara otomatis: jangan menambahkan judul atau subjudul, heading, daftar berpoin, penomoran, tabel, teks tebal, teks miring, atau blok kutipan hanya atas inisiatif sendiri. Gunakan format khusus hanya jika pengguna secara eksplisit memintanya atau jika format itu mutlak diperlukan (misalnya blok kode saat pengguna meminta kode). Untuk jawaban biasa, cukup tulis kalimat dan paragraf yang rapi, langsung, dan mudah dibaca. Jangan warnai seluruh paragraf. Gunakan emoji/ikon kecil hanya bila membantu mengenali kategori atau langkah, jangan menghias setiap baris. Untuk topik visual atau praktik (misalnya perbaikan mesin, komponen, perangkat, produk, tempat, hewan, tanaman, resep, atau langkah teknis), jelaskan dengan urutan yang jelas dan sertakan gambar hanya jika benar-benar relevan dan tersedia dari sumber tepercaya. Jangan mengarang URL gambar atau mengaku gambar berasal dari sumber tertentu. Untuk sumber, gunakan tautan Markdown dengan judul sumber yang spesifik dan URL asli; jangan menulis URL favicon atau thumbnail sebagai sumber. Hindari gambar untuk jawaban abstrak atau sederhana.\n\nWarna jawaban: jangan memakai biru muda untuk semua judul. Setiap judul bagian (Markdown ## atau ###) harus memakai warna berbeda secara bergantian dari palet kontras: teal #5eead4, kuning emas #fbbf24, coral #fb7185, ungu #c4b5fd, hijau #86efac, dan biru langit #7dd3fc. Gunakan judul Markdown agar warna otomatis diterapkan oleh tampilan EdhyX. Isi paragraf dan daftar tetap putih/normal agar nyaman dibaca. Bila benar-benar perlu menandai istilah penting, gunakan penanda [[color=#RRGGBB]]teks berwarna[[/color]] dengan warna yang kontras; jangan warnai seluruh paragraf, jangan gunakan terlalu banyak warna, dan jangan gunakan penanda di dalam blok kode.\n\nGaya jawaban: jawab seperti asisten analitis yang sistematis, tenang, dan langsung ke inti. Untuk pertanyaan sederhana, jawab singkat. Untuk pertanyaan kompleks, susun jawaban dengan judul atau poin bernomor bila membantu; jelaskan langkah penting, fakta, asumsi, dan kesimpulan secara ringkas. Tampilkan alasan atau ringkasan penalaran yang bisa dipahami, bukan penalaran internal tersembunyi. Gunakan bahasa pengguna, hindari pengulangan, basa-basi panjang, dan klaim yang tidak pasti.\n\nRiset dan pencarian: jika alat web tersedia dan pertanyaan membutuhkan informasi terbaru, fakta yang dapat berubah, verifikasi, atau riset, lakukan penelusuran sebelum menjawab. Pecah pertanyaan kompleks menjadi beberapa subpertanyaan atau sudut pencarian yang relevan. Gunakan hasil pencarian untuk menemukan halaman sumber, lalu baca halaman penting secara lebih mendalam bila alat konteks URL tersedia. Utamakan sumber primer/resmi dan sumber independen yang kredibel; bandingkan beberapa sumber untuk klaim penting. Perhatikan tanggal publikasi dan tanggal kejadian, bedakan fakta, perkiraan, dan opini, serta jelaskan bila sumber bertentangan atau bukti belum cukup. Sertakan tautan sumber yang benar-benar digunakan. Jangan mengarang sumber, kutipan, angka, atau kepastian. Untuk pertanyaan sederhana dan pengetahuan yang stabil, jangan memaksakan pencarian.\n\nATURAN WAJIB BERITA DAN SUMBER: Setiap berita yang disebut harus memiliki URL langsung ke halaman artikel, judul artikel spesifik, nama penerbit, dan tanggal publikasi yang tertera atau terverifikasi. Jangan gunakan URL beranda, kategori, tag, pencarian, agregator, atau portal umum sebagai pengganti artikel. Jangan menebak judul, penerbit, tanggal, atau URL. Jika satu saja dari empat unsur tidak ditemukan atau tidak dapat diverifikasi, jangan tampilkan berita itu sebagai berita terverifikasi; nyatakan: "Sumber artikel belum ditemukan." Jika tidak ada berita yang lolos, katakan sumber artikel belum ditemukan dan jangan menyusun daftar berita dari ingatan. Aturan ini berlaku untuk Google Search, Gemini grounding, dan Groq/Vercel.';
+      var sysText = cfg.sys + styleGuide + (useWeb ? '\n\nPENCARIAN WEB WAJIB: Lakukan pencarian menggunakan alat Google Search yang tersedia sebelum menjawab. Jangan hanya mengandalkan pengetahuan internal. Gunakan hasil pencarian untuk menyusun jawaban dan sertakan sumber yang benar-benar dikembalikan oleh alat. Jika tidak ada sumber yang dikembalikan, nyatakan dengan jujur bahwa sumber belum tersedia dan jangan mengarang tautan.' : '') + (locOn && loc ? '\nLokasi GPS pengguna saat ini: ' + loc.lat.toFixed(5) + ', ' + loc.lng.toFixed(5) + ' (akurasi sekitar ' + loc.acc + ' m). Pakai ini bila pertanyaan menyangkut tempat atau jarak.' : '');
+      var body = asImage
+        ? { contents:[{ role:'user', parts:parts }], generationConfig:{ responseModalities:['TEXT','IMAGE'] } }
+        : { system_instruction:{ parts:[{ text: sysText }] }, contents: toContents(c.msgs), generationConfig: useWeb ? { temperature:1 } : undefined };
+      if (!asImage){
+        var tools = [];
+        if (useWeb) tools.push({ google_search:{} }, { url_context:{} });
+        if (locOn && loc){ tools.push({ googleMaps:{} }); body.toolConfig = { retrievalConfig:{ latLng:{ latitude:loc.lat, longitude:loc.lng } } }; }
+        if (tools.length) body.tools = tools;
+      }
+
+      var res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json', 'x-goog-api-key': cfg.key },
+        body: JSON.stringify(body),
+        signal: activeRequest.signal
+      });
+      var data = await res.json().catch(function(){ return {}; });
+      if (!activeRequest || activeRequest.signal.aborted){
+        if (wait.parentNode) wait.parentNode.removeChild(wait);
+        persist();
+        text.value = q; pending = files; renderChips();
+        return;
+      }
+      if (!res.ok){
+        fail(errorText(res.status, (data.error && data.error.message) || '', useWeb));
+      } else {
+        var got = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts;
+        var keep = (got || []).filter(function(p){ return !p.thought && (p.text || p.inlineData); });
+        if (!keep.length) keep = [{ text:'Bot tidak memberi jawaban (mungkin diblokir filter keamanan). Coba ubah permintaannya.' }];
+        var src = [], gm = data.candidates && data.candidates[0] && data.candidates[0].groundingMetadata;
+        ((gm && gm.groundingChunks) || []).forEach(function(ch){
+          var w = ch.web || ch.maps;
+          if (w && /^https?:\/\//.test(w.uri || '') && src.length < 6 && !src.some(function(z){ return z.uri === w.uri; })) src.push({ title: w.title || w.uri, uri: w.uri });
+        });
+        var inlineSources = keep.some(function(p){ return /\[[^\]]+\]\(https?:\/\//i.test(p.text || ''); });
+        if (useWeb && !src.length && !inlineSources) {
+          var searchQueries = gm && Array.isArray(gm.webSearchQueries) ? gm.webSearchQueries : [];
+          var searchRan = searchQueries.length > 0 || !!(gm && gm.searchEntryPoint);
+          keep.push({ text: searchRan
+            ? '⚠ Google Search terdeteksi berjalan, tetapi respons tidak menyertakan tautan sumber yang dapat ditampilkan. Jawaban ini belum terverifikasi dari sumber web.'
+            : '⚠ Google Search diminta, tetapi respons tidak menunjukkan bahwa pencarian berhasil dijalankan atau mengembalikan sumber. Jawaban ini belum terverifikasi dari sumber web.'
+          });
+        }
+        c.msgs.push({ role:'model', parts:keep, src:src });
+        Eyes.unlock(); Eyes.aha(); Eyes.pulse('write', 2600);
+        persist(); render(true);
+      }
+    } catch(err){
+      if (err && err.name === 'AbortError'){
+        if (wait.parentNode) wait.parentNode.removeChild(wait);
+        persist();
+        text.value = q; pending = files; renderChips();
+      } else {
+        console.error('[send]', err);
+        try { fail('Tidak bisa terhubung. Periksa koneksi internet kamu.'); } catch(e){}
+      }
+    } finally {
+      clearTimeout(stTimer);
+      if (Eyes.isLocked()) Eyes.unlock();
+      busy = false; activeRequest = null; setSendState(false);
+      text.focus();
+    }
+  }
+
+  function closeMenu(){ document.body.classList.remove('open'); }
+  function openSettings(){
+    $('key').value = cfg.key; $('model').value = cfg.model; $('imgmodel').value = cfg.imgmodel; $('sys').value = cfg.sys;
+    closeMenu(); dlg.showModal();
+  }
+
+  $('plusBtn').addEventListener('click', function(e){ e.stopPropagation(); $('menu').classList.toggle('on'); });
+  document.addEventListener('click', function(){ $('menu').classList.remove('on'); });
+  $('mFile').addEventListener('click', function(){ $('fileIn').click(); });
+  $('mCam').addEventListener('click', function(){ $('camIn').click(); });
+  $('mImg').addEventListener('click', function(){ imageMode = !imageMode; renderChips(); text.focus(); });
+  [$('fileIn'), $('camIn')].forEach(function(inp){
+    inp.addEventListener('change', function(){ var fl = Array.prototype.slice.call(inp.files); inp.value = ''; onFiles(fl); });
+  });
+  $('mLens').addEventListener('click', function(){ $('lensDlg').showModal(); });
+  $('lensCancel').addEventListener('click', function(){ $('lensDlg').close(); });
+  Array.prototype.forEach.call(document.querySelectorAll('#lensDlg button[data-p]'), function(b){
+    b.addEventListener('click', function(){ lensPrompt = b.getAttribute('data-p'); lensWeb = b.getAttribute('data-web') === '1'; $('lensDlg').close(); $('lensIn').click(); });
+  });
+  $('lensIn').addEventListener('change', function(){
+    var fl = Array.prototype.slice.call($('lensIn').files); $('lensIn').value = '';
+    onFiles(fl).then(function(){
+      if (!pending.length) return;
+      if (lensWeb){ searchOn = true; renderChips(); }
+      text.value = lensPrompt; send();
+    }).catch(function(e){ console.error('[lens]', e); });
+  });
+  $('mLoc').addEventListener('click', function(){ if (locOn){ locOn = false; renderChips(); } else enableLoc(); });
+  $('mWeb').addEventListener('click', function(){ searchOn = !searchOn; renderChips(); });
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition, rec = null, listening = false;
+  if (!SR) $('micBtn').style.display = 'none';
+  else $('micBtn').addEventListener('click', function(){
+    if (listening){ rec.stop(); return; }
+    rec = new SR(); rec.lang = 'id-ID'; rec.interimResults = true; rec.continuous = false;
+    var base = text.value ? text.value + ' ' : '';
+    rec.onresult = function(e){
+      var t = ''; for (var i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+      text.value = base + t; text.dispatchEvent(new Event('input'));
+    };
+    rec.onend = function(){ listening = false; $('micBtn').classList.remove('on'); };
+    rec.onerror = function(e){
+      listening = false; $('micBtn').classList.remove('on');
+      if (e.error === 'not-allowed') addErr('Izin mikrofon ditolak. Aktifkan di Pengaturan iPhone untuk Safari.');
+    };
+    try { rec.start(); listening = true; $('micBtn').classList.add('on'); } catch(x){}
+  });
+  $('form').addEventListener('submit', function(e){
+    e.preventDefault();
+    if (busy && activeRequest){ activeRequest.abort(); return; }
+    send();
+  });
+  text.addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && window.matchMedia('(min-width: 861px)').matches){ e.preventDefault(); send(); }
+  });
+  text.addEventListener('input', function(){ Eyes.pulse('write', 1400); text.style.height = 'auto'; text.style.height = Math.min(text.scrollHeight, 160) + 'px'; });
+  $('menuBtn').addEventListener('click', function(){ document.body.classList.add('open'); });
+  $('scrim').addEventListener('click', closeMenu);
+  $('newBtn').addEventListener('click', function(){
+  cur = null;
+  pending = [];
+  imageMode = false;
+  searchOn = false;
+  locOn = false;
+  loc = null;
+  text.value = '';
+  text.defaultValue = '';
+  text.style.height = 'auto';
+  renderChips();
+  persist();
+  render();
+  closeMenu();
+  text.value = '';
+  text.style.height = 'auto';
+  text.dispatchEvent(new Event('input', { bubbles: true }));
+  text.focus();
+});
+  $('clearHistoryBtn').addEventListener('click', function(){
+    if (!chats.length){ alert('Riwayat chat masih kosong.'); return; }
+    if (!confirm('Hapus semua riwayat chat? Tindakan ini tidak bisa dibatalkan.')) return;
+    chats = []; cur = null; persist(); render(); closeMenu();
+  });
+  $('settingsBtn').addEventListener('click', openSettings);
+  $('cancelBtn').addEventListener('click', function(){ dlg.close(); });
+  $('saveBtn').addEventListener('click', function(){
+    cfg.key = $('key').value.trim();
+    cfg.model = $('model').value.trim() || DEFAULTS.model;
+    cfg.imgmodel = $('imgmodel').value.trim() || 'gemini-3.1-flash-image';
+    cfg.sys = $('sys').value.trim() || DEFAULTS.sys;
+    save('gem_key', cfg.key); save('gem_model', cfg.model); save('gem_sys', cfg.sys); save('gem_imgmodel', cfg.imgmodel);    dlg.close(); render();
+  });
+
+  render();
+  setInterval(updateGreeting, 12000);
+})();
+</script>
+
+<!-- Patch.js -->
+<script>
+(function () {
+  var orig = window.fetch.bind(window);
+  var API = 'generativelanguage.googleapis.com';
+  var BACKUP = 'gemini-3.1-flash-lite';
+  var $ = function (id) { return document.getElementById(id); };
+  function ls(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function swap(u, m) { return u.replace(/models\/[^:\/?]+/, 'models/' + encodeURIComponent(m)); }
+  function withBody(o, b) { return Object.assign({}, o, { body: JSON.stringify(b) }); }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  async function hasAnswer(res) {
+    if (!res.ok) return true;
+    try {
+      var d = await res.clone().json();
+      var p = d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts;
+      return !!(p && p.some(function (x) { return !x.thought && (x.text || x.inlineData); }));
+    } catch (e) { return true; }
+  }
+
+  (function installWebAnswerStyle(){
+    var style=document.createElement('style');
+    style.textContent=
+      '.msg.bot.web-answer strong{font-weight:800;color:#fff!important}'+
+      '.msg.bot.web-answer p:has(>strong:only-child){font-weight:750;line-height:1.35;margin:1em 0 .45em}'+
+      '.msg.bot.web-answer p:has(>strong:only-child):nth-of-type(6n+1){color:#5eead4}'+
+      '.msg.bot.web-answer p:has(>strong:only-child):nth-of-type(6n+2){color:#fbbf24}'+
+      '.msg.bot.web-answer p:has(>strong:only-child):nth-of-type(6n+3){color:#fb7185}'+
+      '.msg.bot.web-answer p:has(>strong:only-child):nth-of-type(6n+4){color:#c4b5fd}'+
+      '.msg.bot.web-answer p:has(>strong:only-child):nth-of-type(6n+5){color:#86efac}'+
+      '.msg.bot.web-answer p:has(>strong:only-child):nth-of-type(6n){color:#7dd3fc}'+
+      '.msg.bot.web-answer p:has(>strong:only-child) strong{color:inherit!important}';
+    (document.head||document.documentElement).appendChild(style);
+    function mark(root){
+      if(!root||!root.querySelectorAll)return;
+      root.querySelectorAll('.msg.bot').forEach(function(node){
+        if(node.querySelector('.src'))node.classList.add('web-answer');
+      });
+    }
+    var observer=new MutationObserver(function(records){
+      records.forEach(function(record){
+        record.addedNodes.forEach(function(node){
+          if(node.nodeType===1){if(node.matches&&node.matches('.msg.bot'))mark(node.parentNode);else mark(node);}
+        });
+      });
+    });
+    observer.observe(document.documentElement,{childList:true,subtree:true});
+    mark(document);
+  })();
+
+  window.fetch = async function (url, opts) {
+    if (typeof url !== 'string' || url.indexOf(API) < 0) return orig(url, opts);
+    var model = ls('gem_model') || BACKUP;
+    var m = url.match(/models\/([^:\/?]+)/);
+    var used = m ? decodeURIComponent(m[1]) : '';
+    var isImg = /image/.test(used);
+    var body = null;
+    try { body = JSON.parse(opts.body); } catch (e) {}
+
+    if (/^gemini-2\.5/.test(used)) { url = swap(url, model); used = model; }
+    if (body && !isImg) {
+      try {
+        var now = new Date();
+        var zone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+        var localStamp = new Intl.DateTimeFormat('id-ID', {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+          hour: '2-digit', minute: '2-digit', second: '2-digit',
+          hourCycle: 'h23', timeZone: zone, timeZoneName: 'long'
+        }).format(now);
+        if (!body.system_instruction) body.system_instruction = { parts: [{ text: '' }] };
+        if (!body.system_instruction.parts || !body.system_instruction.parts.length) body.system_instruction.parts = [{ text: '' }];
+        body.system_instruction.parts[0].text +=
+          '\n\nKONTEKS WAKTU LOKAL PENGGUNA (otomatis saat pesan dikirim): ' + localStamp +
+          '. Zona waktu perangkat: ' + zone +
+          '. Gunakan informasi ini untuk menjawab pertanyaan tentang jam, tanggal, hari, besok, kemarin, dan hitung mundur. Ini adalah waktu dari jam perangkat pengguna; jangan mengklaim telah menyinkronkannya dengan jam atomik/internet.';
+        body.system_instruction.parts[0].text +=
+          '\n\nEDHY VISUAL & DOCUMENT ENGINE: Pilih format visual sesuai permintaan pengguna. Jika diminta tabel biasa, tulis tabel Markdown standar dengan baris header dan pemisah |---| agar dirender sebagai tabel sungguhan. Jika diminta diagram alur atau diagram hubungan, keluarkan satu blok kode berbahasa mermaid berisi sintaks Mermaid yang valid, misalnya flowchart TD dengan node A[Langkah] dan B[Hasil]. Jika diminta grafik, keluarkan satu blok kode berbahasa edhychart yang isinya JSON valid dengan bentuk {"type":"bar|line|pie|doughnut","title":"Judul","labels":["Label 1","Label 2"],"datasets":[{"label":"Nama seri","data":[10,20]}]}. Gunakan hanya data yang tersedia; jangan mengarang angka. Jika diminta membuat file Word atau PDF, keluarkan satu blok edhydocument berisi JSON valid: {"title":"Judul dokumen","blocks":[{"type":"heading","text":"Judul bagian"},{"type":"paragraph","text":"Isi paragraf"},{"type":"bullet","text":"Poin"},{"type":"table","headers":["Kolom 1","Kolom 2"],"rows":[["A","B"]]}]}. Jika diminta file Excel, keluarkan satu blok edhyexcel berisi JSON valid: {"title":"Nama buku kerja","sheets":[{"name":"Data","headers":["Kolom 1","Kolom 2"],"rows":[["A","B"]]}]}. Jangan bungkus JSON dengan teks tambahan di dalam blok tersebut. Di luar blok, berikan pengantar singkat. Pastikan JSON valid, string memakai tanda kutip ganda, dan tidak ada koma tambahan. Untuk permintaan Word/PDF/Excel, hasil harus berupa struktur lengkap yang siap diunduh, bukan sekadar petunjuk.';
+      } catch (e) {}
+      
+      var webRequested = !!(body.tools && body.tools.some(function(t){return !!t.google_search;}));
+      if(webRequested && body.system_instruction && body.system_instruction.parts && body.system_instruction.parts[0]){
+        body.system_instruction.parts[0].text +=
+          '\n\nFORMAT HASIL PENCARIAN WEB: Susun jawaban dengan rapi dan mudah dipindai. Gunakan judul bagian hanya jika membantu, tulis judul sebagai satu baris tebal tersendiri (contoh **Ringkasan**), dan tebalkan nama, angka, atau fakta penting secukupnya. Gunakan emoji atau ikon hanya bila memperjelas kategori/status/langkah; jika tidak perlu, jangan pakai. Warna aksen diterapkan pada judul dan penanda status seperlunya, bukan seluruh paragraf. Isi paragraf tetap netral dan nyaman dibaca. Jangan membuat dekorasi berlebihan dan jangan mengarang sumber.';
+      }
+      opts = withBody(opts, body);
+    }
+
+    var res = await orig(url, opts);
+    for (var i = 0; i < 2 && (res.status === 500 || res.status === 503); i++) {
+      await sleep(1500 * (i + 1)); res = await orig(url, opts);
+    }
+    if ((res.status === 503 || res.status === 404) && !isImg && used !== BACKUP) {
+      url = swap(url, BACKUP); used = BACKUP; res = await orig(url, opts);
+    }
+    if (isImg || !body) return res;
+
+    var requiresWeb = !!(body.tools && body.tools.some(function (t) { return !!t.google_search; }));
+    if (!res.ok && [400, 403, 429].indexOf(res.status) >= 0 && body.tools) {
+      var retryTools = clone(body);
+      if (requiresWeb) {
+        retryTools.tools = [{ google_search: {} }];
+      } else {
+        delete retryTools.tools;
+        delete retryTools.toolConfig;
+      }
+      res = await orig(url, withBody(opts, retryTools));
+      body = retryTools;
+    }
+    if (!(await hasAnswer(res))) {
+      if (body.tools) {
+        var b1 = clone(body); b1.tools = [{ google_search: {} }]; delete b1.toolConfig;
+        res = await orig(url, withBody(opts, b1));
+        if (!(await hasAnswer(res)) && !requiresWeb) {
+          var b2 = clone(body); delete b2.tools; delete b2.toolConfig;
+          res = await orig(url, withBody(opts, b2));
+        }
+      }
+      if (!(await hasAnswer(res)) && used !== BACKUP) {
+        var b3 = clone(body);
+        if (!requiresWeb) { delete b3.tools; delete b3.toolConfig; }
+        res = await orig(swap(url, BACKUP), withBody(opts, b3));
+      }
+    }
+    return res;
+  };
+})();
+</script>
+
+<!-- Groq.js (UPDATED) -->
+<script>
+(function(){
+  var GEM = 'generativelanguage.googleapis.com';
+  var $ = function(id){ return document.getElementById(id); };
+  function ld(k, d){ try { var v = localStorage.getItem(k); return v === null ? d : v; } catch(e){ return d; } }
+  function sv(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+  var patchedFetch = window.fetch.bind(window);
+  var qkey = function(){ return ld('groq_key', ''); };
+  var qmodel = function(){ return ld('groq_model', 'openai/gpt-oss-120b'); };
+  var mode = function(){ return ld('groq_mode', 'auto'); };
+  var webMode = function(){ return ld('groq_web_mode', 'gemini_first'); };
+
+  function textOnly(b){
+    if (b.generationConfig && b.generationConfig.responseModalities) return false;
+    if (b.tools && b.tools.length) return false;
+    return (b.contents || []).every(function(m){
+      return (m.parts || []).every(function(p){ return !p.inlineData; });
+    });
+  }
+  function toGroq(b){
+    var sys = b.system_instruction && b.system_instruction.parts
+      ? b.system_instruction.parts.map(function(p){ return p.text || ''; }).join('') : '';
+    try {
+      var now = new Date();
+      var zone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+      var stamp = new Intl.DateTimeFormat('id-ID', {
+        weekday:'long', day:'numeric', month:'long', year:'numeric',
+        hour:'2-digit', minute:'2-digit', second:'2-digit',
+        hourCycle:'h23', timeZone:zone, timeZoneName:'long'
+      }).format(now);
+      sys += '\n\nWAKTU LOKAL PERANGKAT PENGGUNA: ' + stamp + '. Zona waktu: ' + zone +
+        '. Gunakan untuk pertanyaan jam, tanggal, hari, besok, dan kemarin. Ini waktu perangkat, bukan verifikasi jam atomik.';
+    } catch(e){}
+    var msgs = [];
+    if (sys) msgs.push({ role:'system', content:sys });
+    (b.contents || []).forEach(function(m){
+      var content = (m.parts || []).map(function(p){ return p.text || ''; }).join('');
+      if (content) msgs.push({ role:m.role === 'user' ? 'user' : 'assistant', content:content });
+    });
+    return { model:qmodel(), messages:msgs };
+  }
+  function fake(t){
+    return new Response(JSON.stringify({ candidates:[{ content:{ parts:[{ text:t }] } }] }),
+      { status:200, headers:{ 'Content-Type':'application/json' } });
+  }
+  async function groq(b, signal){
+    var r = await window.fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + qkey() },
+      body:JSON.stringify(toGroq(b)),
+      signal:signal
+    });
+    var j = await r.json().catch(function(){ return {}; });
+    if (!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
+    var answer = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+    if (!answer) throw new Error('Groq tidak mengirim jawaban.');
+    return answer;
+  }
+  function note(name){
+    setTimeout(function(){ var l = $('modelLabel'); if (l) l.textContent = 'via ' + name; }, 150);
+  }
+  async function hasGeminiAnswer(r){
+    if (!r || !r.ok) return false;
+    try {
+      var d = await r.clone().json();
+      var p = d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts;
+      return !!(p && p.some(function(x){ return !x.thought && !!x.text; }));
+    } catch(e){ return false; }
+  }
+  async function hasGeminiSources(r){
+    if (!r || !r.ok) return false;
+    try {
+      var d = await r.clone().json();
+      var c = d.candidates && d.candidates[0];
+      var chunks = c && c.groundingMetadata && c.groundingMetadata.groundingChunks || [];
+      if (chunks.some(function(x){ var w=x.web || x.maps; return !!(w && /^https?:\/\//i.test(w.uri || '')); })) return true;
+      var parts = c && c.content && c.content.parts || [];
+      return parts.some(function(x){ return !x.thought && /\[[^\]]+\]\(https?:\/\/[^)]+\)/i.test(x.text || ''); });
+    } catch(e){ return false; }
+  }
+
+  var RESEARCH_API = 'https://xbot-gamma-hazel.vercel.app/api/research';
+
+  function isWebRequest(b){
+    return !!(b.tools && b.tools.some(function(t){ return !!t.google_search; }));
+  }
+  function latestUserQuery(b){
+    var a = b.contents || [];
+    for (var i=a.length-1;i>=0;i--){
+      if (a[i].role === 'user'){
+        var q = (a[i].parts || []).map(function(p){ return p.text || ''; }).join(' ').trim();
+        if (q) return q;
+      }
+    }
+    return '';
+  }
+  async function groqWebFallback(b, signal){
+    var query = latestUserQuery(b);
+    if (!query) throw new Error('Pertanyaan pencarian web tidak ditemukan.');
+    var response = await window.fetch(RESEARCH_API, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify({ action:'search', query:query }),
+      signal:signal
+    });
+    var data = await response.json().catch(function(){ return {}; });
+    if (!response.ok) throw new Error(data.error || ('Mesin pencarian web gagal (HTTP ' + response.status + ').'));
+    var sources = (data.sources || []).filter(function(x){
+      return x && x.url && x.title && x.content &&
+        /^https?:\/\//i.test(x.url) && String(x.content).trim().length >= 35;
+    }).slice(0,12);
+    if (!sources.length) throw new Error('Mesin pencarian web tidak mengembalikan sumber yang dapat dibaca.');
+    var context = sources.map(function(x,i){
+      return '[' + (i+1) + '] Judul artikel: ' + x.title + '\nPenerbit: ' + (x.publisher || 'Tidak dicantumkan') +
+        (x.publishedAt ? '\nTanggal publikasi: ' + x.publishedAt : '') +
+        '\nURL artikel: ' + x.url + '\nIsi: ' + String(x.content).slice(0,1800);
+    }).join('\n\n');
+    var fallbackBody = JSON.parse(JSON.stringify(b));
+    delete fallbackBody.tools;
+    delete fallbackBody.toolConfig;
+    if (!fallbackBody.system_instruction) fallbackBody.system_instruction = { parts:[{ text:'' }] };
+    if (!fallbackBody.system_instruction.parts || !fallbackBody.system_instruction.parts.length) fallbackBody.system_instruction.parts = [{ text:'' }];
+    fallbackBody.system_instruction.parts[0].text +=
+      '\n\nMODE PENELUSURAN WEB EDHY: Gunakan hanya hasil penelusuran berikut sebagai dasar fakta. Cantumkan URL langsung artikel dan judulnya. Cantumkan penerbit serta tanggal hanya jika tersedia; jangan mengarang metadata. Jangan gunakan homepage, kategori, tag, hasil pencarian, atau agregator sebagai URL artikel. Jika sumber tidak memiliki isi yang cukup, jangan gunakan sumber tersebut. Jawab dalam bahasa pengguna dan jangan mengaku memakai Google Search/Gemini.\n\nHASIL PENELUSURAN WEB:\n' + context;
+    return await groq(fallbackBody, signal);
+  }
+
+  window.fetch = async function(u, o){
+    if (String(u).indexOf(GEM) < 0 || !o || !o.body) return patchedFetch(u, o);
+    var b;
+    try { b = JSON.parse(o.body); } catch(e){ return patchedFetch(u, o); }
+    
+    var hasGroqKey = !!qkey();
+    var chatMode = mode();
+    if (!hasGroqKey || chatMode === 'gemini') return patchedFetch(u, o);
+
+    var isWeb = isWebRequest(b);
+    var wm = webMode();
+    var textOK = textOnly(b);
+    var preferGroqWeb = isWeb && (chatMode === 'groq' || wm === 'groq_first' || wm === 'groq_only');
+    var groqWebOnly = isWeb && wm === 'groq_only';
+    var preferGroqText = !isWeb && chatMode === 'groq' && textOK;
+
+    var r, err, triedGroqWeb = false, triedGroqText = false;
+
+    // PRIORITAS WEB GROQ
+    if (preferGroqWeb) {
+      triedGroqWeb = true;
+      try {
+        var webAns = await groqWebFallback(b, o.signal);
+        note('Groq + Web');
+        return fake(webAns);
+      } catch(e){
+        if (o.signal && o.signal.aborted) throw e;
+        err = e;
+        if (groqWebOnly) throw new Error('Pencarian web Groq+Vercel gagal: ' + (e.message || 'tidak diketahui'));
+      }
+    }
+
+    // PRIORITAS CHAT GROQ
+    if (preferGroqText) {
+      triedGroqText = true;
+      try {
+        var chatAns = await groq(b, o.signal);
+        note('Groq');
+        return fake(chatAns);
+      } catch(e){
+        if (o.signal && o.signal.aborted) throw e;
+        err = e;
+      }
+    }
+
+    // GEMINI
+    try {
+      r = await patchedFetch(u, o);
+      if (await hasGeminiAnswer(r)){
+        if (isWeb && !(await hasGeminiSources(r)) && !triedGroqWeb && !(o.signal && o.signal.aborted)){
+          triedGroqWeb = true;
+          try {
+            var fixAns = await groqWebFallback(b, o.signal);
+            note('Groq + Web');
+            return fake(fixAns);
+          } catch(fe){
+            if (o.signal && o.signal.aborted) throw fe;
+            err = fe;
+          }
+        } else {
+          note('Gemini');
+          return r;
+        }
+      }
+    } catch(e){
+      if (o.signal && o.signal.aborted) throw e;
+      err = e;
+    }
+
+    // FALLBACK GROQ + WEB
+    if (isWeb && !triedGroqWeb && !(o.signal && o.signal.aborted)){
+      try {
+        var retryAns = await groqWebFallback(b, o.signal);
+        note('Groq + Web');
+        return fake(retryAns);
+      } catch(e){
+        if (o.signal && o.signal.aborted) throw e;
+        err = e;
+      }
+    }
+
+    // FALLBACK GROQ BIASA
+    if (!isWeb && textOK && !triedGroqText && !(o.signal && o.signal.aborted)){
+      try {
+        var backup = await groq(b, o.signal);
+        note('Groq');
+        return fake(backup);
+      } catch(e){
+        if (o.signal && o.signal.aborted) throw e;
+        err = e;
+      }
+    }
+
+    if (r && !isWeb) return r;
+    throw err || new Error(isWeb
+      ? 'Pencarian web gagal: Groq + Vercel dan Gemini tidak dapat dihubungi.'
+      : 'Gemini dan layanan cadangan tidak dapat dihubungi.');
+  };
+
+  // UI SETTINGS
+  var dlg = $('dlg'), row = dlg && dlg.querySelector('.row');
+  if (!dlg || !row) return;
+  var st = document.createElement('style');
+  st.textContent = 'dialog select{width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font:inherit}';
+  document.head.appendChild(st);
+  var box = document.createElement('div');
+  box.innerHTML =
+    '<label for="gqk">API key Groq<span>Dibuat di console.groq.com. Disimpan hanya di browser ini.</span></label>' +
+    '<input id="gqk" type="password" autocomplete="off" placeholder="gsk_...">' +
+    '<label for="gqm">Model Groq gratis<span>Pilih model gratis Groq untuk chat teks. Batas pemakaian mengikuti kuota akun Groq.</span></label>' +
+    '<select id="gqm"><option value="openai/gpt-oss-120b">GPT-OSS 120B — paling kuat</option><option value="openai/gpt-oss-20b">GPT-OSS 20B — lebih ringan &amp; cepat</option><option value="qwen/qwen3.8-27b">Qwen 3.8 27B — penalaran &amp; umum</option></select>' +
+    '<label for="gmode">Mode Chat<span>Otomatis: Gemini utama, Groq cadangan. Utamakan Groq: Groq dulu untuk chat teks.</span></label>' +
+    '<select id="gmode"><option value="auto">Otomatis</option><option value="gemini">Hanya Gemini</option><option value="groq">Utamakan Groq</option></select>' +
+    '<label for="gwebmode">Mode Pencarian Web<span>Groq + Vercel dulu = cari sumber berita lewat Vercel, lalu Groq menyusun jawaban. Gemini jadi cadangan.</span></label>' +
+    '<select id="gwebmode"><option value="gemini_first">Otomatis (Gemini dulu, Groq cadangan)</option><option value="groq_first">Groq + Vercel dulu (Gemini cadangan)</option><option value="groq_only">Hanya Groq + Vercel (tanpa Gemini)</option></select>';
+  dlg.insertBefore(box, row);
+  function fill(){
+    $('gqk').value = qkey();
+    var savedModel = qmodel();
+    $('gqm').value = ['openai/gpt-oss-120b','openai/gpt-oss-20b','qwen/qwen3.8-27b'].indexOf(savedModel) >= 0 ? savedModel : 'openai/gpt-oss-120b';
+    $('gmode').value = mode();
+    $('gwebmode').value = webMode();
+  }
+  new MutationObserver(function(){ if (dlg.open) fill(); })
+    .observe(dlg, { attributes:true, attributeFilter:['open'] });
+  $('saveBtn').addEventListener('click', function(){
+    sv('groq_key', $('gqk').value.trim());
+    sv('groq_model', $('gqm').value.trim() || 'llama-3.3-70b-versatile');
+    sv('groq_mode', $('gmode').value);
+    sv('groq_web_mode', $('gwebmode').value);
+  });
+})();
+</script>
+
+<!-- visual-engine.js -->
+<script>
+(function () {
+  'use strict';
+  if (window.__edhyVisualEngineLoaded) return;
+  window.__edhyVisualEngineLoaded = true;
+  var css = [
+    '.edhy-table-wrap{width:100%;overflow-x:auto;margin:12px 0 16px;border:1px solid #343434;border-radius:12px;background:#0b0b0b}',
+    '.edhy-table{border-collapse:separate;border-spacing:0;width:max-content;min-width:100%;max-width:none;table-layout:auto;color:#f4f4f4}',
+    '.edhy-table th,.edhy-table td{padding:8px 11px;border-right:1px solid #303030;border-bottom:1px solid #303030;text-align:left;vertical-align:middle;white-space:normal;overflow-wrap:break-word;word-break:normal;min-width:88px;max-width:280px}',
+    '.edhy-table th:last-child,.edhy-table td:last-child{border-right:0}.edhy-table th{background:#242424;color:#fff;font-weight:650;white-space:nowrap}.edhy-table tbody tr:nth-child(even){background:#111}.edhy-table tbody tr:hover{background:#191919}.edhy-table tr:last-child td{border-bottom:0}',
+    '.edhy-table-wrap{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#555 #111}',
+    '.edhy-tools{display:flex;flex-wrap:wrap;gap:7px;padding:8px 10px;border-top:1px solid #303030}',
+    '.edhy-tool{display:inline-flex;align-items:center;gap:6px;border:1px solid #444;border-radius:8px;padding:6px 9px;color:#fff;background:#171717;cursor:pointer}',
+    '.edhy-file-card{display:flex;align-items:center;gap:12px;margin:12px 0;padding:13px;border:1px solid #343434;border-radius:13px;background:#101010}',
+    '.edhy-file-icon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:9px;color:#fff;font-weight:800;}',
+    '.edhy-file-info{min-width:0;flex:1}.edhy-file-info strong{display:block;}.edhy-file-info small{display:block;color:#aaa;margin-top:3px}',
+    '.edhy-file-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}',
+    '.edhy-chart{width:100%;max-width:720px;min-height:260px;margin:12px 0;padding:12px;border:1px solid #343434;border-radius:12px;background:#101010}',
+    '.edhy-chart canvas{width:100%!important;max-height:360px}',
+    '@media(max-width:520px){.edhy-file-card{align-items:flex-start}.edhy-file-icon{width:36px;height:36px;flex-basis:36px}}',
+    '.edhy-table, .edhy-table * { font-family: system-ui, -apple-system, sans-serif !important; font-size: 13.5px !important; }',
+    '.edhy-table th { font-size: 13.5px !important; }',
+    '.edhy-tool { font-size: 12px !important; }',
+    '.edhy-file-card, .edhy-file-card * { font-family: system-ui, -apple-system, sans-serif !important; font-size: 14px !important; }',
+    '.edhy-file-icon { font-size: 17px !important; }',
+    '.edhy-file-info small { font-size: 12px !important; }',
+    '.edhy-chart, .edhy-chart * { font-family: system-ui, -apple-system, sans-serif !important; font-size: 12px !important; }'
+  ].join('');
+  var style = document.createElement('style'); style.textContent = css; document.head.appendChild(style);
+  function safeName(s) { return String(s || 'edhy-document').replace(/[\\/:*?"<>|]+/g, '-').trim().slice(0, 70) || 'edhy-document'; }
+  function parseJSON(s) { try { return JSON.parse(String(s || '')); } catch (e) { return null; } }
+  function cellText(v) { return v == null ? '' : String(v); }
+  function makeButton(label, color, fn) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'edhy-tool'; b.textContent = label;
+    b.style.borderColor = color; b.addEventListener('click', fn); return b;
+  }
+  function downloadBlob(blob, name) {
+    var url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+  }
+  function tableNode(headers, rows) {
+    var wrap = document.createElement('div'); wrap.className = 'edhy-table-wrap';
+    var table = document.createElement('table'); table.className = 'edhy-table';
+    var columnCount = Math.max((headers || []).length, 1);
+    if (headers && headers.length) {
+      var thead = document.createElement('thead'), trh = document.createElement('tr');
+      headers.forEach(function (v) { var th = document.createElement('th'); th.textContent = cellText(v); trh.appendChild(th); });
+      thead.appendChild(trh); table.appendChild(thead);
+    }
+    var tbody = document.createElement('tbody');
+    (rows || []).forEach(function (row) {
+      var tr = document.createElement('tr');
+      for (var ci = 0; ci < columnCount; ci++) { var td = document.createElement('td'); td.textContent = cellText((row || [])[ci]); tr.appendChild(td); }
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody); wrap.appendChild(table); return wrap;
+  }
+  function tableToXlsx(headers, rows, title) {
+    if (!window.XLSX) { alert('Fitur Excel belum termuat. Muat ulang halaman dan coba lagi.'); return; }
+    var aoa = [];
+    if (headers && headers.length) aoa.push(headers);
+    (rows || []).forEach(function (r) { aoa.push(r); });
+    var ws = XLSX.utils.aoa_to_sheet(aoa), wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Data'); XLSX.writeFile(wb, safeName(title) + '.xlsx');
+  }
+  function renderMarkdownTables(root) {
+    var paras = Array.prototype.slice.call(root.querySelectorAll('p')), i = 0;
+    while (i < paras.length) {
+      var tx = (paras[i].textContent || '').trim();
+      if (!/^\|.*\|$/.test(tx)) { i++; continue; }
+      var group = [], j = i;
+      while (j < paras.length && /^\|.*\|$/.test((paras[j].textContent || '').trim())) { group.push(paras[j]); j++; }
+      if (group.length >= 2) {
+        function splitRow(el) { return (el.textContent || '').trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(function (x) { return x.trim(); }); }
+        var raw = group.map(splitRow);
+        var isSep = function (r) { return r.length && r.every(function (c) { return /^:?-{3,}:?$/.test(c.replace(/\s/g, '')); }); };
+        if (raw.length > 1 && isSep(raw[1])) {
+          var headers = raw[0], rows = raw.slice(2).filter(function (r) { return !isSep(r); });
+          var node = tableNode(headers, rows), tools = document.createElement('div'); tools.className = 'edhy-tools';
+          tools.appendChild(makeButton('Unduh Excel', '#217346', function () { tableToXlsx(headers, rows, 'tabel-edhy'); }));
+          node.appendChild(tools); group[0].parentNode.insertBefore(node, group[0]);
+          group.forEach(function (x) { if (x.parentNode) x.parentNode.removeChild(x); });
+        }
+      }
+      i = Math.max(i + 1, j);
+    }
+  }
+  function makeCard(kind, title, description, actions) {
+    var colors = { word: '#185ABD', excel: '#217346', pdf: '#E5252A' }, labels = { word: 'W', excel: 'X', pdf: 'PDF' };
+    var card = document.createElement('div'); card.className = 'edhy-file-card';
+    var icon = document.createElement('div'); icon.className = 'edhy-file-icon'; icon.style.background = colors[kind] || '#555'; icon.textContent = labels[kind] || 'ED';
+    var info = document.createElement('div'); info.className = 'edhy-file-info';
+    var strong = document.createElement('strong'); strong.textContent = title || 'Dokumen Edhy';
+    var small = document.createElement('small'); small.textContent = description || 'File dibuat dari jawaban Edhy';
+    var actionBox = document.createElement('div'); actionBox.className = 'edhy-file-actions';
+    actions.forEach(function (a) { actionBox.appendChild(makeButton(a.label, colors[a.kind] || '#555', a.run)); });
+    info.appendChild(strong); info.appendChild(small); info.appendChild(actionBox);
+    card.appendChild(icon); card.appendChild(info); return card;
+  }
+  function docParagraphs(data) {
+    var D = window.docx;
+    if (!D || !D.Document || !D.Packer) throw new Error('Pustaka Word belum termuat.');
+    var children = [];
+    children.push(new D.Paragraph({ text: String(data.title || 'Dokumen Edhy'), heading: D.HeadingLevel ? D.HeadingLevel.TITLE : 'Title', spacing: { after: 260 } }));
+    (data.blocks || []).forEach(function (b) {
+      if (b.type === 'table') {
+        var all = []; if (b.headers && b.headers.length) all.push(b.headers);
+        (b.rows || []).forEach(function (r) { all.push(r); });
+        var trs = all.map(function (r, ri) {
+          return new D.TableRow({ children: (r || []).map(function (v) {
+            return new D.TableCell({ children: [new D.Paragraph({ children: [new D.TextRun({ text: cellText(v), bold: ri === 0 })] })] });
+          }) });
+        });
+        if (trs.length) children.push(new D.Table({ rows: trs }));
+        children.push(new D.Paragraph({ text: '' }));
+      } else {
+        var text = String(b.text || '');
+        if (b.type === 'heading') children.push(new D.Paragraph({ text: text, heading: D.HeadingLevel ? D.HeadingLevel.HEADING_1 : 'Heading1', spacing: { before: 180, after: 100 } }));
+        else if (b.type === 'bullet') children.push(new D.Paragraph({ text: text, bullet: { indent: 360 } }));
+        else children.push(new D.Paragraph({ text: text, spacing: { after: 100 } }));
+      }
+    });
+    return children;
+  }
+  function exportWord(data) {
+    try {
+      var D = window.docx, doc = new D.Document({ sections: [{ children: docParagraphs(data) }] });
+      D.Packer.toBlob(doc).then(function (blob) { downloadBlob(blob, safeName(data.title) + '.docx'); })
+        .catch(function () { alert('Dokumen Word gagal dibuat. Coba lagi.'); });
+    } catch (e) { alert(e.message || 'Pustaka Word belum siap.'); }
+  }
+  function exportPDF(data) {
+    try {
+      var J = window.jspdf && window.jspdf.jsPDF;
+      if (!J) throw new Error('Pustaka PDF belum termuat.');
+      var pdf = new J({ unit: 'mm', format: 'a4' }), y = 18, margin = 15, maxW = 180;
+      pdf.setFont('helvetica', 'bold'); pdf.setFontSize(17);
+      var titleLines = pdf.splitTextToSize(String(data.title || 'Dokumen Edhy'), maxW);
+      pdf.text(titleLines, margin, y); y += titleLines.length * 8 + 5;
+      pdf.setFont('helvetica', 'normal'); pdf.setFontSize(10);
+      function put(text) {
+        var lines = pdf.splitTextToSize(String(text || ''), maxW);
+        lines.forEach(function (line) { if (y > 280) { pdf.addPage(); y = 18; } pdf.text(line, margin, y); y += 5; }); y += 2;
+      }
+      (data.blocks || []).forEach(function (b) {
+        if (b.type === 'table') { put((b.headers || []).join(' | ')); (b.rows || []).forEach(function (r) { put((r || []).join(' | ')); }); }
+        else put(b.text || '');
+      });
+      pdf.save(safeName(data.title) + '.pdf');
+    } catch (e) { alert(e.message || 'Dokumen PDF gagal dibuat.'); }
+  }
+  function renderStructured(root) {
+    Array.prototype.slice.call(root.querySelectorAll('pre')).forEach(function (pre) {
+      if (pre.dataset.edhyDone) return;
+      var lang = pre.querySelector('.code-lang'), code = pre.querySelector('code');
+      var type = lang ? (lang.textContent || '').trim().toLowerCase() : '';
+      if (!code) return;
+      if (type === 'mermaid' || type === 'edhydiagram') {
+        pre.dataset.edhyDone = '1';
+        var diagram = document.createElement('div');
+        diagram.style.cssText = 'width:100%;overflow-x:auto;margin:12px 0;padding:12px;border:1px solid #343434;border-radius:12px;background:#101010';
+        var graph = document.createElement('div');
+        graph.className = 'mermaid';
+        graph.textContent = code.textContent;
+        diagram.appendChild(graph);
+        pre.parentNode.replaceChild(diagram, pre);
+        if (window.mermaid) {
+          try {
+            window.mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: 'dark' });
+            window.mermaid.run({ nodes: [graph] }).catch(function () { graph.textContent = 'Diagram tidak dapat dirender. Periksa sintaks diagram.'; });
+          } catch (e) { graph.textContent = 'Diagram tidak dapat dirender.'; }
+        } else graph.textContent = 'Pustaka diagram belum termuat. Periksa koneksi internet.';
+      } else if (type === 'edhychart') {
+        var data = parseJSON(code.textContent);
+        if (!data || !Array.isArray(data.labels) || !Array.isArray(data.datasets)) return;
+        pre.dataset.edhyDone = '1';
+        var box = document.createElement('div'); box.className = 'edhy-chart';
+        var title = document.createElement('strong'); title.textContent = data.title || 'Grafik Edhy'; box.appendChild(title);
+        var canvas = document.createElement('canvas'); canvas.setAttribute('aria-label', title.textContent); box.appendChild(canvas);
+        pre.parentNode.replaceChild(box, pre);
+        if (window.Chart) {
+          var ct = ['bar', 'line', 'pie', 'doughnut'].indexOf(data.type) >= 0 ? data.type : 'bar';
+          new Chart(canvas.getContext('2d'), { type: ct, data: { labels: data.labels, datasets: data.datasets.map(function (ds) { return { label: ds.label || 'Data', data: ds.data || [], borderWidth: 2, tension: .25 }; }) },
+            options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#eee' } } },
+              scales: (ct === 'pie' || ct === 'doughnut') ? {} : { x: { ticks: { color: '#ddd' }, grid: { color: '#333' } }, y: { beginAtZero: true, ticks: { color: '#ddd' }, grid: { color: '#333' } } } } });
+        } else box.appendChild(document.createTextNode('Grafik tidak dapat dimuat. Periksa koneksi internet.'));
+      } else if (type === 'edhydocument') {
+        var docData = parseJSON(code.textContent);
+        if (!docData || !Array.isArray(docData.blocks)) return;
+        pre.dataset.edhyDone = '1';
+        var card = makeCard('word', docData.title || 'Dokumen Word', 'Dokumen dapat diunduh sebagai Word atau PDF.', [
+          { label: 'Word (.docx)', kind: 'word', run: function () { exportWord(docData); } },
+          { label: 'PDF', kind: 'pdf', run: function () { exportPDF(docData); } }
+        ]);
+        pre.parentNode.replaceChild(card, pre);
+      } else if (type === 'edhyexcel') {
+        var excelData = parseJSON(code.textContent);
+        if (!excelData || !Array.isArray(excelData.sheets) || !excelData.sheets.length) return;
+        pre.dataset.edhyDone = '1';
+        var sheet = excelData.sheets[0];
+        var cardX = makeCard('excel', excelData.title || 'Buku kerja Excel', 'Pratinjau lembar: ' + (sheet.name || 'Data'), [
+          { label: 'Unduh Excel (.xlsx)', kind: 'excel', run: function () {
+            if (!window.XLSX) { alert('Pustaka Excel belum termuat.'); return; }
+            var wb = XLSX.utils.book_new();
+            excelData.sheets.forEach(function (s, i) {
+              var rows = []; if (s.headers) rows.push(s.headers);
+              (s.rows || []).forEach(function (r) { rows.push(r); });
+              var ws = XLSX.utils.aoa_to_sheet(rows);
+              XLSX.utils.book_append_sheet(wb, ws, String(s.name || ('Sheet' + (i + 1))).slice(0, 31));
+            });
+            XLSX.writeFile(wb, safeName(excelData.title || 'edhy-data') + '.xlsx');
+          } }
+        ]);
+        cardX.appendChild(tableNode(sheet.headers || [], sheet.rows || []));
+        pre.parentNode.replaceChild(cardX, pre);
+      }
+    });
+  }
+  function process(root) { renderMarkdownTables(root); renderStructured(root); }
+  var target = document.getElementById('wrap');
+  if (!target) return;
+  var observer = new MutationObserver(function () {
+    window.clearTimeout(window.__edhyVisualScanTimer);
+    window.__edhyVisualScanTimer = window.setTimeout(function () {
+      document.querySelectorAll('#wrap .msg.bot').forEach(process);
+    }, 80);
+  });
+  observer.observe(target, { childList: true, subtree: true });
+  document.querySelectorAll('#wrap .msg.bot').forEach(process);
+})();
+</script>
+
+<!-- terminal-ui.js -->
+<script>
+(function(){
+  'use strict';
+  var API = '';
+  var accessKey = '';
+  var token = '';
+  var $ = function(s, root){ return (root || document).querySelector(s); };
+  var style = document.createElement('style');
+style.textContent = `
+    .edhy-term{width:100%;max-width:980px;margin:12px auto;background:#f3f3f3;border:1px solid #8b8b8b;border-radius:3px;overflow:hidden;color:#171717;font:11px/1.4 "Segoe UI",system-ui,sans-serif;box-shadow:0 14px 38px #0009}
+    .edhy-term.is-maximized{position:fixed;inset:8px;z-index:99999;width:auto;max-width:none;max-height:none;margin:0;display:flex;flex-direction:column}
+    .edhy-term-head{height:34px;min-height:34px;display:flex;align-items:center;gap:7px;padding:0 0 0 10px;background:#0878d1;color:#fff;border-bottom:1px solid #075fa8;user-select:none}
+    .edhy-term-appicon{width:19px;height:19px;display:grid;place-items:center;background:#fff;color:#0878d1;font:700 13px/1 ui-monospace,monospace;border-radius:2px}
+    .edhy-term-title{flex:1;color:#fff;font-size:11px!important;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .edhy-win-controls{height:100%;display:flex;align-items:stretch}
+    .edhy-win-control{width:44px;border:0;background:transparent;color:#fff;font:16px/1 "Segoe UI",sans-serif;cursor:pointer}
+    .edhy-win-control:hover{background:#ffffff28}
+    .edhy-win-control.edhy-win-close:hover{background:#e81123}
+    .edhy-term-body{padding:10px;background:#f3f3f3;min-height:0}
+    .edhy-term-config{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:10px}
+    .edhy-term input{min-width:0;width:100%;border:1px solid #aaa;border-radius:0;background:#fff;color:#171717;padding:7px 8px;font:11px "Segoe UI",system-ui,sans-serif}
+    .edhy-term input:focus{outline:1px solid #0078d4;outline-offset:0;border-color:#0078d4}
+    .edhy-term button{cursor:pointer}
+    .edhy-term .edhy-action{border:1px solid #adadad;border-radius:2px;background:#e1e1e1;color:#171717;padding:6px 10px;font:11px "Segoe UI",system-ui,sans-serif;box-shadow:inset 0 1px #fff}
+    .edhy-term .edhy-action:hover:not(:disabled){background:#e5f1fb;border-color:#0078d4}
+    .edhy-term .edhy-action:disabled{opacity:.5;cursor:default}
+    .edhy-term .edhy-start{background:#e5f1fb;color:#075b9b;border-color:#0078d4;font-weight:600}
+    .edhy-term-toolbar{display:flex;gap:7px;margin-bottom:10px}
+    .edhy-term-output{min-height:210px;max-height:44vh;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;background:#090d12;border:1px solid #252b33;border-radius:0;padding:10px;color:#e6edf5;font:11px/1.45 Consolas,"Courier New",monospace}
+    .edhy-term-line{display:flex;gap:7px;margin:10px 0 0}.edhy-term-line input{flex:1}
+    .edhy-term-hint{color:#505050;font:10px/1.4 "Segoe UI",system-ui,sans-serif;margin:0 0 8px}
+    .edhy-term-error{color:#ff9292}.edhy-term-ok{color:#9bf4b0}
+    .edhy-term-taskbar{height:32px;display:flex;align-items:center;gap:7px;padding:0 9px;background:#202020;color:#eee;font:10px "Segoe UI",sans-serif}
+    .edhy-task-start{height:28px;width:30px;display:grid;place-items:center;color:#fff;font-size:19px!important;background:transparent;border:0}
+    .edhy-task-start:hover{background:#ffffff20}
+    .edhy-task-app{height:25px;display:flex;align-items:center;gap:6px;padding:0 8px;background:#343434;border-bottom:2px solid #49a6e9;color:#fff}
+    .edhy-task-spacer{flex:1}
+    .edhy-task-clock{font-variant-numeric:tabular-nums;color:#eee}
+    .edhy-term.is-minimized .edhy-term-body,.edhy-term.is-minimized .edhy-term-taskbar{display:none}
+    .edhy-term.is-maximized .edhy-term-body{flex:1;display:flex;flex-direction:column;overflow:auto}
+    .edhy-term.is-maximized .edhy-term-output{flex:1;max-height:none}
+    @media(max-width:560px){
+      .edhy-term{border-radius:2px;margin:8px auto}
+      .edhy-term-head{height:33px;min-height:33px;padding-left:8px}
+      .edhy-win-control{width:38px}
+      .edhy-term-body{padding:8px}
+      .edhy-term-config{grid-template-columns:1fr}
+      .edhy-term-output{min-height:160px;max-height:38vh;padding:8px;font-size:10px;line-height:1.4}
+      .edhy-term-line{gap:5px}
+      .edhy-term .edhy-action{padding:6px 8px;font-size:10px}
+      .edhy-term.is-maximized{inset:0;border:0}
+      .edhy-term.is-maximized .edhy-term-output{min-height:120px}
+    }
+
+    .edhy-monitor{width:100%;max-width:980px;margin:12px auto;background:#020704;border:1px solid #164b2b;border-radius:10px;overflow:hidden;color:#00ff66;font:10px/1.4 Consolas,monospace;box-shadow:0 12px 35px #0009}
+    .edhy-monitor-head,.edhy-monitor-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:#07150c;border-bottom:1px solid #164b2b}
+    .edhy-monitor-title{font:700 10px/1.3 Consolas,monospace!important;letter-spacing:.7px;color:#00ff66!important}
+    .edhy-monitor-win{width:20px;height:20px;fill:#00ff66;flex:none}
+    .edhy-monitor-output{height:260px;overflow:auto;padding:9px 10px;white-space:pre-wrap;overflow-wrap:anywhere;background:#020704;color:#00ff66;font:10px/1.45 Consolas,monospace}
+    .edhy-monitor-line-ok{color:#62ff9a}.edhy-monitor-line-info{color:#b4ffc9}
+    .edhy-monitor-foot{border-top:1px solid #164b2b;border-bottom:0;font-size:8px;letter-spacing:.2px}
+    .edhy-monitor-clock{font:700 9px/1.3 Consolas,monospace;color:#70ff9b;font-variant-numeric:tabular-nums;text-align:right}
+    .edhy-monitor-cursor{display:inline-block;width:7px;height:13px;background:#00ff66;vertical-align:-2px;animation:edhyBlink .9s steps(2,start) infinite}
+    @keyframes edhyBlink{to{visibility:hidden}}
+    @media(max-width:560px){.edhy-monitor{margin:8px auto;border-radius:5px}.edhy-monitor-output{height:235px;padding:8px;font-size:9px;line-height:1.4}.edhy-monitor-head,.edhy-monitor-foot{padding:7px 9px}.edhy-monitor-title{font-size:9px!important}.edhy-monitor-clock{font-size:8px}}
+
+    .edhy-term, .edhy-term * { font-family: "Segoe UI", system-ui, sans-serif !important; font-size: 11px !important; }
+    .edhy-term-title { font-size: 11px !important; }
+    .edhy-term .edhy-win-control { font-size: 16px !important; }
+    .edhy-term .edhy-term-appicon { font-size: 13px !important; }
+    .edhy-term .edhy-task-start { font-size: 19px !important; }
+    .edhy-term .edhy-term-output { font-size: 11px !important; font-family: Consolas, "Courier New", monospace !important; }
+    .edhy-term .edhy-action { font-size: 11px !important; }
+    .edhy-term input { font-size: 11px !important; }
+    .edhy-term .edhy-term-hint { font-size: 10px !important; }
+    .edhy-term .edhy-term-taskbar { font-size: 10px !important; }
+    
+    .edhy-monitor, .edhy-monitor * { font-family: Consolas, monospace !important; font-size: 10px !important; }
+    .edhy-monitor-title { font-size: 10px !important; }
+    .edhy-monitor-clock { font-size: 9px !important; }
+    .edhy-monitor-output { font-size: 10px !important; }
+
+  `;
+
+  document.head.appendChild(style);
+
+  function appendOutput(box, text, cls){
+    var line = document.createElement('div');
+    if(cls) line.className = cls;
+    line.textContent = text;
+    box.appendChild(line);
+    box.scrollTop = box.scrollHeight;
+  }
+  async function request(action, extra){
+    if(!API) throw new Error('Isi URL backend Vercel terlebih dahulu.');
+    if(!accessKey) throw new Error('Isi Kode Akses Terminal terlebih dahulu.');
+    var response = await fetch(API.replace(/\/$/, '') + '/api/terminal', {
+      method:'POST', headers:{'Content-Type':'application/json','X-Terminal-Key':accessKey},
+      body:JSON.stringify(Object.assign({action:action,token:token}, extra || {}))
+    });
+    var data = await response.json().catch(function(){return {};});
+    if(!response.ok) throw new Error(data.error || ('HTTP '+response.status));
+    if(data.token) token = data.token;
+    return data;
+  }
+  function openTerminal(){
+    var wrap = $('#wrap');
+    if(!wrap) return;
+    var old = $('#edhyTerminal', wrap);
+    if(old){ old.scrollIntoView({behavior:'smooth',block:'center'}); return; }
+    var card = document.createElement('section');
+    card.id = 'edhyTerminal'; card.className = 'edhy-term';
+    card.innerHTML = `
+      <div class="edhy-term-head">
+        <span class="edhy-term-appicon">›_</span>
+        <strong class="edhy-term-title">Edhy Terminal — Linux Sandbox</strong>
+        <div class="edhy-win-controls">
+          <button class="edhy-win-control edhy-win-min" type="button" aria-label="Minimize" title="Minimize">—</button>
+          <button class="edhy-win-control edhy-win-max" type="button" aria-label="Maximize" title="Maximize">□</button>
+          <button class="edhy-win-control edhy-win-close" type="button" aria-label="Close" title="Close">×</button>
+        </div>
+      </div>
+      <div class="edhy-term-body">
+        <div class="edhy-term-config">
+          <input class="edhy-api" type="url" placeholder="URL backend Vercel (https://...vercel.app)" autocomplete="url">
+          <input class="edhy-key" type="password" placeholder="Kode Akses Terminal" autocomplete="off">
+        </div>
+        <div class="edhy-term-toolbar"><button class="edhy-action edhy-start" type="button">▶ Mulai Terminal</button><button class="edhy-action edhy-stop" type="button" disabled>■ Akhiri Sesi</button></div>
+        <p class="edhy-term-hint">Terminal Linux berjalan di sandbox cloud terisolasi, bukan di HP atau komputer mas. Sesi sementara; jangan masukkan password atau API key pribadi.</p>
+        <div class="edhy-term-output" role="log" aria-live="polite">Edhy Terminal belum terhubung. Masukkan alamat backend dan kode akses.</div>
+        <form class="edhy-term-line"><input class="edhy-command" type="text" placeholder="Ketik perintah, contoh: pwd" autocomplete="off" disabled><button class="edhy-action edhy-run" type="submit" disabled>Jalankan</button></form>
+      </div>
+      <div class="edhy-term-taskbar">
+        <button class="edhy-task-start" type="button" title="Start">⊞</button>
+        <div class="edhy-task-app"><span>›_</span><span>Edhy Terminal</span></div>
+        <span class="edhy-task-spacer"></span>
+        <span class="edhy-task-clock">EdhyX</span>
+      </div>`;
+    wrap.appendChild(card);
+    var output = $('.edhy-term-output',card), cmd = $('.edhy-command',card), run = $('.edhy-run',card), start = $('.edhy-start',card), stop = $('.edhy-stop',card);
+    $('.edhy-api',card).value = API;
+    $('.edhy-api',card).addEventListener('change',function(){API=this.value.trim().replace(/\/$/,'');});
+    $('.edhy-key',card).addEventListener('change',function(){accessKey=this.value.trim();});
+    $('.edhy-win-close',card).addEventListener('click',function(){card.remove();});
+    $('.edhy-win-min',card).addEventListener('click',function(){card.classList.toggle('is-minimized');});
+    $('.edhy-win-max',card).addEventListener('click',function(){
+      card.classList.toggle('is-maximized');
+      $('.edhy-win-max',card).textContent = card.classList.contains('is-maximized') ? '❐' : '□';
+      $('.edhy-win-max',card).title = card.classList.contains('is-maximized') ? 'Restore' : 'Maximize';
+    });
+    start.addEventListener('click',async function(){
+      API=$('.edhy-api',card).value.trim().replace(/\/$/,'');
+      accessKey=$('.edhy-key',card).value.trim();
+      start.disabled=true; appendOutput(output,'Menyiapkan sandbox...','edhy-term-ok');
+      try{
+        var d=await request('start'); appendOutput(output,d.output || 'Sandbox siap.','edhy-term-ok');
+        cmd.disabled=false;run.disabled=false;stop.disabled=false;cmd.focus();
+      }catch(e){appendOutput(output,'ERROR: '+e.message,'edhy-term-error');}
+      finally{start.disabled=false;}
+    });
+    $('.edhy-term-line',card).addEventListener('submit',async function(e){
+      e.preventDefault(); var command=cmd.value.trim(); if(!command||!token)return;
+      cmd.value=''; run.disabled=true; appendOutput(output,'$ '+command);
+      try{
+        var d=await request('run',{command:command});
+        if(d.stdout) appendOutput(output,d.stdout);
+        if(d.stderr) appendOutput(output,d.stderr,'edhy-term-error');
+        if(d.exitCode!==0 && d.exitCode!==undefined) appendOutput(output,'[exit code '+d.exitCode+']','edhy-term-error');
+        if(!d.stdout&&!d.stderr) appendOutput(output,'[Perintah selesai tanpa output]');
+      }catch(e){appendOutput(output,'ERROR: '+e.message,'edhy-term-error');}
+      finally{run.disabled=false;cmd.focus();}
+    });
+    stop.addEventListener('click',async function(){
+      stop.disabled=true;run.disabled=true;cmd.disabled=true;
+      try{await request('stop');appendOutput(output,'Sesi terminal diakhiri.','edhy-term-ok');}
+      catch(e){appendOutput(output,'INFO: '+e.message,'edhy-term-error');}
+      token='';run.disabled=true;cmd.disabled=true;start.disabled=false;
+    });
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+
+
+  function openMonitoring(){
+    var wrap=$('#wrap'); if(!wrap)return;
+    var old=$('#edhySystemMonitor',wrap);
+    if(old){old.scrollIntoView({behavior:'smooth',block:'center'});return;}
+    var card=document.createElement('section');
+    card.id='edhySystemMonitor';card.className='edhy-monitor';
+    card.innerHTML=`
+      <div class="edhy-monitor-head">
+        <strong class="edhy-monitor-title">EdhyX Computer</strong>
+        <svg class="edhy-monitor-win" viewBox="0 0 24 24" aria-label="Windows"><path d="M2 5.2 10.7 4v7.9H2zm9.7-1.4L22 2.4v9.5H11.7zM2 12.9h8.7v7.9L2 19.6zm9.7 0H22v9.5l-10.3-1.4z"/></svg>
+      </div>
+      <div class="edhy-monitor-output" role="log" aria-live="polite"></div>
+      <div class="edhy-monitor-foot"><span>SYS://EDHY-CORE</span><time class="edhy-monitor-clock">--/--/----</time></div>`;
+    wrap.appendChild(card);
+    var output=$('.edhy-monitor-output',card), clock=$('.edhy-monitor-clock',card);
+    var lines=[
+      ['root@edhy:~$ boot --system',''],
+      ['[ OK ] Initializing system core...','ok'],
+      ['[ OK ] Loading AI neural modules','ok'],
+      ['[ OK ] Establishing secure session','ok'],
+      ['> scanning memory blocks...','info'],
+      ['0x00AF  0x19BC  0xFE21  0x0A77',''],
+      ['01001001 01001110 01001001 01010100',''],
+      ['> analyzing system data...','info'],
+      ['[ INFO ] Signal detected','info'],
+      ['[ OK ] Security layer active','ok'],
+      ['> connecting intelligence engine...','info'],
+      ['handshake://secure/channel',''],
+      ['[ OK ] Connection established','ok'],
+      ['> optimizing response engine...','info'],
+      ['████████████████░░ 82%',''],
+      ['[ OK ] System monitoring active','ok'],
+      ['root@edhy:~$ monitor --live','']
+    ];
+    var i=0,timer=null,closed=false;
+    function updateClock(){
+      var now=new Date();
+      clock.textContent=new Intl.DateTimeFormat('id-ID',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).format(now);
+    }
+    function tick(){
+      if(closed)return;
+      var item=lines[i++%lines.length],line=document.createElement('div');
+      line.textContent=item[0];
+      if(item[1])line.className='edhy-monitor-line-'+item[1];
+      output.appendChild(line);
+      while(output.children.length>16)output.firstChild.remove();
+      output.scrollTop=output.scrollHeight;
+      timer=setTimeout(tick,380);
+    }
+    updateClock();
+    var clockTimer=setInterval(updateClock,1000);
+    card._edhyCleanup=function(){closed=true;clearTimeout(timer);clearInterval(clockTimer);};
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+    tick();
+  }
+
+  function normalizeCommand(value){
+    return String(value || '').toLocaleLowerCase('id-ID').trim().replace(/\s+/g,' ').replace(/[.!?]+$/,'');
+  }
+  function isComputerCommand(value){
+    return /^(?:(?:edhy)[, ]+)?(?:tolong\s+)?(?:buka|tampilkan|jalankan)\s+(?:(?:panel|dasbor)\s+)?(?:edhyx\s+)?(?:computer|komputer|monitoring(?:\s+sistem)?|kontrol\s+sistem)(?:\s+sekarang)?$/i.test(normalizeCommand(value));
+  }
+  function isTerminalCommand(value){
+    return /^(?:(?:edhy)[, ]+)?(?:tolong\s+)?(?:buka|akses|jalankan|masuk ke)\s+terminal$/i.test(normalizeCommand(value));
+  }
+  function handleEdhyCommand(e){
+    var input=$('#text');
+    var value=input && input.value || '';
+    var computer=isComputerCommand(value), terminal=isTerminalCommand(value);
+    if(!computer && !terminal) return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    if(input){input.value='';input.style.height='auto';}
+    if(computer) openMonitoring();
+    else openTerminal();
+  }
+  var chatForm=$('#form');
+  if(chatForm) chatForm.addEventListener('submit',handleEdhyCommand,true);
+  window.EdhyTerminal={open:openTerminal,openMonitoring:openMonitoring};
+})();
+</script>
+
+<!-- baca-link.js -->
+<script>
+(function(){
+  var API = 'https://xbot-gamma-hazel.vercel.app/api/research';
+  var URL_RE = /https?:\/\/[^\s<>"')]+/i;
+  var origFetch = window.fetch;
+
+  window.fetch = async function(input, init){
+    try {
+      var url = typeof input === 'string' ? input : (input && input.url) || '';
+      if (/generativelanguage\.googleapis\.com/.test(url) && init && typeof init.body === 'string'){
+        var body = JSON.parse(init.body);
+        var msgs = body.contents || [];
+        var last = msgs[msgs.length - 1];
+        var userTxt = (last && last.role === 'user')
+          ? (last.parts || []).map(function(p){ return p.text || ''; }).join(' ')
+          : '';
+        var m = userTxt.match(URL_RE);
+        if (m){
+          if (!body.system_instruction) body.system_instruction = { parts: [{ text: '' }] };
+          if (!body.system_instruction.parts || !body.system_instruction.parts.length) {
+            body.system_instruction.parts = [{ text: '' }];
+          }
+
+          var r = await origFetch(API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'read', url: m[0] }),
+            signal: init.signal
+          });
+
+          var d = await r.json().catch(function(){ return {}; });
+          if (!r.ok) throw new Error(d.error || ('Edhy gagal membaca halaman (HTTP ' + r.status + ').'));
+
+          var pg = d.sources && d.sources[0];
+          if (!pg || !pg.content || !String(pg.content).trim()) {
+            throw new Error('Firecrawl tidak mengembalikan isi halaman yang dapat dibaca.');
+          }
+
+          body.system_instruction.parts[0].text +=
+            '\n\nISI HALAMAN YANG DIMINTA (sumber: ' + pg.url + '):\n' +
+            pg.title + '\n' + pg.content +
+            '\n\nUtamakan isi halaman di atas sebagai sumber utama. Jangan mengarang isi yang tidak tercantum. Jika pertanyaan juga meminta informasi terbaru atau perbandingan, gunakan alat pencarian yang sudah tersedia bila memungkinkan dan bedakan informasi dari halaman dengan informasi tambahan.';
+
+          init = Object.assign({}, init, { body: JSON.stringify(body) });
+        }
+      }
+    } catch(e){
+      if (e) throw e;
+    }
+    return origFetch.call(this, input, init);
+  };
+})();
+</script>
+</body>
+</html>
