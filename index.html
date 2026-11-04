@@ -303,9 +303,9 @@ input, textarea{font-size:17.6px!important}
 </dialog>
 <dialog id="dlg">
   <h2>Pengaturan</h2>
-  <label for="key">API key Gemini untuk fitur gambar/lampiran<span>Chat teks memakai Cloudflare Worker. Key ini tetap disimpan di browser untuk fitur gambar dan analisis lampiran.</span></label>
+  <label for="key">API key Gemini<span>Dibuat di aistudio.google.com. Disimpan hanya di browser ini.</span></label>
   <input id="key" type="password" autocomplete="off" placeholder="AIza...">
-  <label for="model">Model Gemini untuk gambar/lampiran<span>Chat teks memakai model yang dikonfigurasi di Cloudflare Worker.</span></label>
+  <label for="model">Model<span>Untuk akun gratis, pakai model Flash atau Flash-Lite.</span></label>
   <select id="model">
     <option value="gemini-3.8-flash">gemini-3.8-flash</option>
     <option value="gemini-3.6-flash">gemini-3.6-flash</option>
@@ -1072,14 +1072,14 @@ input, textarea{font-size:17.6px!important}
       }
 
       var model = asImage ? cfg.imgmodel : cfg.model;
-      var styleGuide = '\n\nTAMPILAN JAWABAN EDHYX: Secara default, jawab dalam teks biasa dengan paragraf natural. JANGAN membuat format Markdown secara otomatis: jangan menambahkan judul atau subjudul, heading, daftar berpoin, penomoran, tabel, teks tebal, teks miring, atau blok kutipan hanya atas inisiatif sendiri. Gunakan format khusus hanya jika pengguna secara eksplisit memintanya atau jika format itu mutlak diperlukan (misalnya blok kode saat pengguna meminta kode). Untuk jawaban biasa, cukup tulis kalimat dan paragraf yang rapi, langsung, dan mudah dibaca. Jangan warnai seluruh paragraf. Gunakan emoji/ikon kecil hanya bila membantu mengenali kategori atau langkah, jangan menghias setiap baris. Untuk topik visual atau praktik (misalnya perbaikan mesin, komponen, perangkat, produk, tempat, hewan, tanaman, resep, atau langkah teknis), jelaskan dengan urutan yang jelas dan sertakan gambar hanya jika benar-benar relevan dan tersedia dari sumber tepercaya. Jangan mengarang URL gambar atau mengaku gambar berasal dari sumber tertentu. Untuk sumber, gunakan tautan Markdown dengan judul sumber yang spesifik dan URL asli; jangan menulis URL favicon atau thumbnail sebagai sumber. Hindari gambar untuk jawaban abstrak atau sederhana.\n\nWarna jawaban: jangan memakai biru muda untuk semua judul. Setiap judul bagian (Markdown ## atau ###) harus memakai warna berbeda secara bergantian dari palet kontras: teal #5eead4, kuning emas #fbbf24, coral #fb7185, ungu #c4b5fd, hijau #86efac, dan biru langit #7dd3fc. Gunakan judul Markdown agar warna otomatis diterapkan oleh tampilan EdhyX. Isi paragraf dan daftar tetap putih/normal agar nyaman dibaca. Bila benar-benar perlu menandai istilah penting, gunakan penanda [[color=#RRGGBB]]teks berwarna[[/color]] dengan warna yang kontras; jangan warnai seluruh paragraf, jangan gunakan terlalu banyak warna, dan jangan gunakan penanda di dalam blok kode.\n\nGaya jawaban: jawab seperti asisten analitis yang sistematis, tenang, dan langsung ke inti. Untuk pertanyaan sederhana, jawab singkat. Untuk pertanyaan kompleks, susun jawaban dengan judul atau poin bernomor bila membantu; jelaskan langkah penting, fakta, asumsi, dan kesimpulan secara ringkas. Tampilkan alasan atau ringkasan penalaran yang bisa dipahami, bukan penalaran internal tersembunyi. Gunakan bahasa pengguna, hindari pengulangan, basa-basi panjang, dan klaim yang tidak pasti.\n\nRiset dan pencarian: jika alat web tersedia dan pertanyaan membutuhkan informasi terbaru, fakta yang dapat berubah, verifikasi, atau riset, lakukan penelusuran sebelum menjawab. Pecah pertanyaan kompleks menjadi beberapa subpertanyaan atau sudut pencarian yang relevan. Gunakan hasil pencarian untuk menemukan halaman sumber, lalu baca halaman penting secara lebih mendalam bila alat konteks URL tersedia. Utamakan sumber primer/resmi dan sumber independen yang kredibel; bandingkan beberapa sumber untuk klaim penting. Perhatikan tanggal publikasi dan tanggal kejadian, bedakan fakta, perkiraan, dan opini, serta jelaskan bila sumber bertentangan atau bukti belum cukup. Sertakan tautan sumber yang benar-benar digunakan. Jangan mengarang sumber, kutipan, angka, atau kepastian. Untuk pertanyaan sederhana dan pengetahuan yang stabil, jangan memaksakan pencarian.\n\nATURAN WAJIB BERITA DAN SUMBER: Setiap berita yang disebut harus memiliki URL langsung ke halaman artikel, judul artikel spesifik, nama penerbit, dan tanggal publikasi yang tertera atau terverifikasi. Jangan gunakan URL beranda, kategori, tag, pencarian, agregator, atau portal umum sebagai pengganti artikel. Jangan menebak judul, penerbit, tanggal, atau URL. Jika satu saja dari empat unsur tidak ditemukan atau tidak dapat diverifikasi, jangan tampilkan berita itu sebagai berita terverifikasi; nyatakan: "Sumber artikel belum ditemukan." Jika tidak ada berita yang lolos, katakan sumber artikel belum ditemukan dan jangan menyusun daftar berita dari ingatan. Aturan ini berlaku untuk hasil pencarian Tavily yang disediakan oleh Cloudflare Worker.';
-      var sysText = cfg.sys + styleGuide + (useWeb ? '\n\nPENCARIAN WEB WAJIB MELALUI TAVILY: Permintaan pencarian web diproses oleh Cloudflare Worker menggunakan Tavily. Gunakan konteks dan sumber Tavily yang disertakan Worker dalam instruksi ini. Jangan mengaku menjalankan Google Search, Gemini grounding, atau alat pencarian lain. Sertakan hanya URL sumber yang benar-benar diberikan Worker. Jika sumber tidak tersedia atau pencarian gagal, jelaskan bahwa hasil Tavily tidak tersedia; jangan mengarang sumber atau mengklaim pencarian berhasil.' : '') + (locOn && loc ? '\nLokasi GPS pengguna saat ini: ' + loc.lat.toFixed(5) + ', ' + loc.lng.toFixed(5) + ' (akurasi sekitar ' + loc.acc + ' m). Pakai ini bila pertanyaan menyangkut tempat atau jarak.' : '');
+      var styleGuide = '\n\nTAMPILAN JAWABAN EDHYX: Secara default, jawab dalam teks biasa dengan paragraf natural. JANGAN membuat format Markdown secara otomatis: jangan menambahkan judul atau subjudul, heading, daftar berpoin, penomoran, tabel, teks tebal, teks miring, atau blok kutipan hanya atas inisiatif sendiri. Gunakan format khusus hanya jika pengguna secara eksplisit memintanya atau jika format itu mutlak diperlukan (misalnya blok kode saat pengguna meminta kode). Untuk jawaban biasa, cukup tulis kalimat dan paragraf yang rapi, langsung, dan mudah dibaca. Jangan warnai seluruh paragraf. Gunakan emoji/ikon kecil hanya bila membantu mengenali kategori atau langkah, jangan menghias setiap baris. Untuk topik visual atau praktik (misalnya perbaikan mesin, komponen, perangkat, produk, tempat, hewan, tanaman, resep, atau langkah teknis), jelaskan dengan urutan yang jelas dan sertakan gambar hanya jika benar-benar relevan dan tersedia dari sumber tepercaya. Jangan mengarang URL gambar atau mengaku gambar berasal dari sumber tertentu. Untuk sumber, gunakan tautan Markdown dengan judul sumber yang spesifik dan URL asli; jangan menulis URL favicon atau thumbnail sebagai sumber. Hindari gambar untuk jawaban abstrak atau sederhana.\n\nWarna jawaban: jangan memakai biru muda untuk semua judul. Setiap judul bagian (Markdown ## atau ###) harus memakai warna berbeda secara bergantian dari palet kontras: teal #5eead4, kuning emas #fbbf24, coral #fb7185, ungu #c4b5fd, hijau #86efac, dan biru langit #7dd3fc. Gunakan judul Markdown agar warna otomatis diterapkan oleh tampilan EdhyX. Isi paragraf dan daftar tetap putih/normal agar nyaman dibaca. Bila benar-benar perlu menandai istilah penting, gunakan penanda [[color=#RRGGBB]]teks berwarna[[/color]] dengan warna yang kontras; jangan warnai seluruh paragraf, jangan gunakan terlalu banyak warna, dan jangan gunakan penanda di dalam blok kode.\n\nGaya jawaban: jawab seperti asisten analitis yang sistematis, tenang, dan langsung ke inti. Untuk pertanyaan sederhana, jawab singkat. Untuk pertanyaan kompleks, susun jawaban dengan judul atau poin bernomor bila membantu; jelaskan langkah penting, fakta, asumsi, dan kesimpulan secara ringkas. Tampilkan alasan atau ringkasan penalaran yang bisa dipahami, bukan penalaran internal tersembunyi. Gunakan bahasa pengguna, hindari pengulangan, basa-basi panjang, dan klaim yang tidak pasti.\n\nRiset dan pencarian: jika alat web tersedia dan pertanyaan membutuhkan informasi terbaru, fakta yang dapat berubah, verifikasi, atau riset, lakukan penelusuran sebelum menjawab. Pecah pertanyaan kompleks menjadi beberapa subpertanyaan atau sudut pencarian yang relevan. Gunakan hasil pencarian untuk menemukan halaman sumber, lalu baca halaman penting secara lebih mendalam bila alat konteks URL tersedia. Utamakan sumber primer/resmi dan sumber independen yang kredibel; bandingkan beberapa sumber untuk klaim penting. Perhatikan tanggal publikasi dan tanggal kejadian, bedakan fakta, perkiraan, dan opini, serta jelaskan bila sumber bertentangan atau bukti belum cukup. Sertakan tautan sumber yang benar-benar digunakan. Jangan mengarang sumber, kutipan, angka, atau kepastian. Untuk pertanyaan sederhana dan pengetahuan yang stabil, jangan memaksakan pencarian.\n\nATURAN WAJIB BERITA DAN SUMBER: Setiap berita yang disebut harus memiliki URL langsung ke halaman artikel, judul artikel spesifik, nama penerbit, dan tanggal publikasi yang tertera atau terverifikasi. Jangan gunakan URL beranda, kategori, tag, pencarian, agregator, atau portal umum sebagai pengganti artikel. Jangan menebak judul, penerbit, tanggal, atau URL. Jika satu saja dari empat unsur tidak ditemukan atau tidak dapat diverifikasi, jangan tampilkan berita itu sebagai berita terverifikasi; nyatakan: "Sumber artikel belum ditemukan." Jika tidak ada berita yang lolos, katakan sumber artikel belum ditemukan dan jangan menyusun daftar berita dari ingatan. Aturan ini berlaku untuk Google Search, Gemini grounding, dan Groq/Vercel.';
+      var sysText = cfg.sys + styleGuide + (useWeb ? '\n\nPENCARIAN WEB WAJIB: Lakukan pencarian menggunakan alat Google Search yang tersedia sebelum menjawab. Jangan hanya mengandalkan pengetahuan internal. Gunakan hasil pencarian untuk menyusun jawaban dan sertakan sumber yang benar-benar dikembalikan oleh alat. Jika tidak ada sumber yang dikembalikan, nyatakan dengan jujur bahwa sumber belum tersedia dan jangan mengarang tautan.' : '') + (locOn && loc ? '\nLokasi GPS pengguna saat ini: ' + loc.lat.toFixed(5) + ', ' + loc.lng.toFixed(5) + ' (akurasi sekitar ' + loc.acc + ' m). Pakai ini bila pertanyaan menyangkut tempat atau jarak.' : '');
       var body = asImage
         ? { contents:[{ role:'user', parts:parts }], generationConfig:{ responseModalities:['TEXT','IMAGE'] } }
         : { system_instruction:{ parts:[{ text: sysText }] }, contents: toContents(c.msgs), generationConfig: useWeb ? { temperature:1 } : undefined };
       if (!asImage){
         var tools = [];
-        // Pencarian web ditangani Tavily di Cloudflare Worker; jangan meminta Google Search Gemini.
+        if (useWeb) tools.push({ google_search:{} }, { url_context:{} });
         if (locOn && loc){ tools.push({ googleMaps:{} }); body.toolConfig = { retrievalConfig:{ latLng:{ latitude:loc.lat, longitude:loc.lng } } }; }
         if (tools.length) body.tools = tools;
       }
@@ -1110,12 +1110,11 @@ input, textarea{font-size:17.6px!important}
         });
         var inlineSources = keep.some(function(p){ return /\[[^\]]+\]\(https?:\/\//i.test(p.text || ''); });
         if (useWeb && !src.length && !inlineSources) {
-          var searchStatus = gm && gm.searchStatus ? String(gm.searchStatus) : 'unknown';
-          keep.push({ text: searchStatus.toLowerCase() === 'error'
-            ? '⚠ Pencarian Tavily gagal atau tidak dapat diakses. Jawaban ini belum didukung sumber web.'
-            : searchStatus.toLowerCase() === 'success'
-              ? '⚠ Tavily mengembalikan status berhasil, tetapi tidak ada tautan sumber yang dapat ditampilkan.'
-              : '⚠ Status pencarian Tavily tidak tersedia dan tidak ada tautan sumber yang dapat ditampilkan. Jawaban ini belum terverifikasi dari web.'
+          var searchQueries = gm && Array.isArray(gm.webSearchQueries) ? gm.webSearchQueries : [];
+          var searchRan = searchQueries.length > 0 || !!(gm && gm.searchEntryPoint);
+          keep.push({ text: searchRan
+            ? '⚠ Google Search terdeteksi berjalan, tetapi respons tidak menyertakan tautan sumber yang dapat ditampilkan. Jawaban ini belum terverifikasi dari sumber web.'
+            : '⚠ Google Search diminta, tetapi respons tidak menunjukkan bahwa pencarian berhasil dijalankan atau mengembalikan sumber. Jawaban ini belum terverifikasi dari sumber web.'
           });
         }
         c.msgs.push({ role:'model', parts:keep, src:src });
@@ -1365,149 +1364,265 @@ input, textarea{font-size:17.6px!important}
 })();
 </script>
 
-<!-- Cloudflare Worker chat bridge -->
+<!-- Groq.js (UPDATED) -->
 <script>
-(function () {
-  'use strict';
-  if (window.__edhyCloudflareBridgeLoaded) return;
-  window.__edhyCloudflareBridgeLoaded = true;
+(function(){
+  var GEM = 'generativelanguage.googleapis.com';
+  var $ = function(id){ return document.getElementById(id); };
+  function ld(k, d){ try { var v = localStorage.getItem(k); return v === null ? d : v; } catch(e){ return d; } }
+  function sv(k, v){ try { localStorage.setItem(k, v); } catch(e){} }
+  var patchedFetch = window.fetch.bind(window);
+  var qkey = function(){ return ld('groq_key', ''); };
+  var qmodel = function(){ return ld('groq_model', 'openai/gpt-oss-120b'); };
+  var mode = function(){ return ld('groq_mode', 'auto'); };
+  var webMode = function(){ return ld('groq_web_mode', 'gemini_first'); };
 
-  var WORKER_URL = 'https://chat-api.8jjjjmdn2v.workers.dev';
-  var originalFetch = window.fetch.bind(window);
-  var $ = function (id) { return document.getElementById(id); };
-
-  function getText(parts) {
-    return (parts || []).map(function (part) {
-      return typeof part.text === 'string' ? part.text : '';
-    }).filter(Boolean).join('\n').trim();
-  }
-
-  function isImageRequest(body) {
-    return !!(body.generationConfig &&
-      body.generationConfig.responseModalities &&
-      body.generationConfig.responseModalities.indexOf('IMAGE') >= 0);
-  }
-
-  function hasInlineImage(body) {
-    return (body.contents || []).some(function (item) {
-      return (item.parts || []).some(function (part) {
-        return !!(part.inlineData || part.fileData);
-      });
+  function textOnly(b){
+    if (b.generationConfig && b.generationConfig.responseModalities) return false;
+    if (b.tools && b.tools.length) return false;
+    return (b.contents || []).every(function(m){
+      return (m.parts || []).every(function(p){ return !p.inlineData; });
     });
   }
-
-  function convertConversation(body) {
-    var items = (body.contents || []).filter(function (item) {
-      return item && (item.role === 'user' || item.role === 'model');
+  function toGroq(b){
+    var sys = b.system_instruction && b.system_instruction.parts
+      ? b.system_instruction.parts.map(function(p){ return p.text || ''; }).join('') : '';
+    try {
+      var now = new Date();
+      var zone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+      var stamp = new Intl.DateTimeFormat('id-ID', {
+        weekday:'long', day:'numeric', month:'long', year:'numeric',
+        hour:'2-digit', minute:'2-digit', second:'2-digit',
+        hourCycle:'h23', timeZone:zone, timeZoneName:'long'
+      }).format(now);
+      sys += '\n\nWAKTU LOKAL PERANGKAT PENGGUNA: ' + stamp + '. Zona waktu: ' + zone +
+        '. Gunakan untuk pertanyaan jam, tanggal, hari, besok, dan kemarin. Ini waktu perangkat, bukan verifikasi jam atomik.';
+    } catch(e){}
+    var msgs = [];
+    if (sys) msgs.push({ role:'system', content:sys });
+    (b.contents || []).forEach(function(m){
+      var content = (m.parts || []).map(function(p){ return p.text || ''; }).join('');
+      if (content) msgs.push({ role:m.role === 'user' ? 'user' : 'assistant', content:content });
     });
-    var lastUser = -1;
-    for (var i = items.length - 1; i >= 0; i--) {
-      if (items[i].role === 'user' && getText(items[i].parts)) {
-        lastUser = i;
-        break;
+    return { model:qmodel(), messages:msgs };
+  }
+  function fake(t){
+    return new Response(JSON.stringify({ candidates:[{ content:{ parts:[{ text:t }] } }] }),
+      { status:200, headers:{ 'Content-Type':'application/json' } });
+  }
+  async function groq(b, signal){
+    var r = await window.fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json', 'Authorization':'Bearer ' + qkey() },
+      body:JSON.stringify(toGroq(b)),
+      signal:signal
+    });
+    var j = await r.json().catch(function(){ return {}; });
+    if (!r.ok) throw new Error((j.error && j.error.message) || ('HTTP ' + r.status));
+    var answer = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
+    if (!answer) throw new Error('Groq tidak mengirim jawaban.');
+    return answer;
+  }
+  function note(name){
+    setTimeout(function(){ var l = $('modelLabel'); if (l) l.textContent = 'via ' + name; }, 150);
+  }
+  async function hasGeminiAnswer(r){
+    if (!r || !r.ok) return false;
+    try {
+      var d = await r.clone().json();
+      var p = d.candidates && d.candidates[0] && d.candidates[0].content && d.candidates[0].content.parts;
+      return !!(p && p.some(function(x){ return !x.thought && !!x.text; }));
+    } catch(e){ return false; }
+  }
+  async function hasGeminiSources(r){
+    if (!r || !r.ok) return false;
+    try {
+      var d = await r.clone().json();
+      var c = d.candidates && d.candidates[0];
+      var chunks = c && c.groundingMetadata && c.groundingMetadata.groundingChunks || [];
+      if (chunks.some(function(x){ var w=x.web || x.maps; return !!(w && /^https?:\/\//i.test(w.uri || '')); })) return true;
+      var parts = c && c.content && c.content.parts || [];
+      return parts.some(function(x){ return !x.thought && /\[[^\]]+\]\(https?:\/\/[^)]+\)/i.test(x.text || ''); });
+    } catch(e){ return false; }
+  }
+
+  var RESEARCH_API = 'https://xbot-gamma-hazel.vercel.app/api/research';
+
+  function isWebRequest(b){
+    return !!(b.tools && b.tools.some(function(t){ return !!t.google_search; }));
+  }
+  function latestUserQuery(b){
+    var a = b.contents || [];
+    for (var i=a.length-1;i>=0;i--){
+      if (a[i].role === 'user'){
+        var q = (a[i].parts || []).map(function(p){ return p.text || ''; }).join(' ').trim();
+        if (q) return q;
       }
     }
-    if (lastUser < 0) throw new Error('Pesan pengguna tidak ditemukan.');
-
-    var message = getText(items[lastUser].parts);
-    var history = items.slice(0, lastUser).map(function (item) {
-      return {
-        role: item.role === 'model' ? 'assistant' : 'user',
-        content: getText(item.parts)
-      };
-    }).filter(function (item) { return !!item.content; }).slice(-10);
-
-    return { message: message, history: history };
+    return '';
+  }
+  async function groqWebFallback(b, signal){
+    var query = latestUserQuery(b);
+    if (!query) throw new Error('Pertanyaan pencarian web tidak ditemukan.');
+    var response = await window.fetch(RESEARCH_API, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify({ action:'search', query:query }),
+      signal:signal
+    });
+    var data = await response.json().catch(function(){ return {}; });
+    if (!response.ok) throw new Error(data.error || ('Mesin pencarian web gagal (HTTP ' + response.status + ').'));
+    var sources = (data.sources || []).filter(function(x){
+      return x && x.url && x.title && x.content &&
+        /^https?:\/\//i.test(x.url) && String(x.content).trim().length >= 35;
+    }).slice(0,12);
+    if (!sources.length) throw new Error('Mesin pencarian web tidak mengembalikan sumber yang dapat dibaca.');
+    var context = sources.map(function(x,i){
+      return '[' + (i+1) + '] Judul artikel: ' + x.title + '\nPenerbit: ' + (x.publisher || 'Tidak dicantumkan') +
+        (x.publishedAt ? '\nTanggal publikasi: ' + x.publishedAt : '') +
+        '\nURL artikel: ' + x.url + '\nIsi: ' + String(x.content).slice(0,1800);
+    }).join('\n\n');
+    var fallbackBody = JSON.parse(JSON.stringify(b));
+    delete fallbackBody.tools;
+    delete fallbackBody.toolConfig;
+    if (!fallbackBody.system_instruction) fallbackBody.system_instruction = { parts:[{ text:'' }] };
+    if (!fallbackBody.system_instruction.parts || !fallbackBody.system_instruction.parts.length) fallbackBody.system_instruction.parts = [{ text:'' }];
+    fallbackBody.system_instruction.parts[0].text +=
+      '\n\nMODE PENELUSURAN WEB EDHY: Gunakan hanya hasil penelusuran berikut sebagai dasar fakta. Cantumkan URL langsung artikel dan judulnya. Cantumkan penerbit serta tanggal hanya jika tersedia; jangan mengarang metadata. Jangan gunakan homepage, kategori, tag, hasil pencarian, atau agregator sebagai URL artikel. Jika sumber tidak memiliki isi yang cukup, jangan gunakan sumber tersebut. Jawab dalam bahasa pengguna dan jangan mengaku memakai Google Search/Gemini.\n\nHASIL PENELUSURAN WEB:\n' + context;
+    return await groq(fallbackBody, signal);
   }
 
-  function workerResponse(data) {
-    var chunks = (data.sources || []).filter(function (source) {
-      return source && /^https?:\/\//i.test(source.url || '');
-    }).map(function (source) {
-      return { web: { uri: source.url, title: source.title || source.url } };
-    });
+  window.fetch = async function(u, o){
+    if (String(u).indexOf(GEM) < 0 || !o || !o.body) return patchedFetch(u, o);
+    var b;
+    try { b = JSON.parse(o.body); } catch(e){ return patchedFetch(u, o); }
+    
+    var hasGroqKey = !!qkey();
+    var chatMode = mode();
+    if (!hasGroqKey || chatMode === 'gemini') return patchedFetch(u, o);
 
-    var payload = {
-      candidates: [{
-        content: { role: 'model', parts: [{ text: data.text || '' }] },
-        finishReason: 'STOP',
-        groundingMetadata: { groundingChunks: chunks, searchStatus: data.searchStatus || 'unknown', provider: data.provider || 'Cloudflare Worker' }
-      }],
-      edhyProvider: data.provider || 'Cloudflare Worker',
-      edhySearchStatus: data.searchStatus || 'unknown',
-      edhyImages: data.images || []
-    };
+    var isWeb = isWebRequest(b);
+    var wm = webMode();
+    var textOK = textOnly(b);
+    var preferGroqWeb = isWeb && (chatMode === 'groq' || wm === 'groq_first' || wm === 'groq_only');
+    var groqWebOnly = isWeb && wm === 'groq_only';
+    var preferGroqText = !isWeb && chatMode === 'groq' && textOK;
 
-    return new Response(JSON.stringify(payload), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json; charset=utf-8' }
-    });
-  }
+    var r, err, triedGroqWeb = false, triedGroqText = false;
 
-  window.fetch = async function (url, options) {
-    var target = typeof url === 'string' ? url : (url && url.url) || '';
-
-    // Pembuatan gambar dan analisis lampiran visual tetap memakai jalur Gemini lama.
-    if (target.indexOf('generativelanguage.googleapis.com') < 0 ||
-        !options || !options.body) {
-      return originalFetch(url, options);
+    // PRIORITAS WEB GROQ
+    if (preferGroqWeb) {
+      triedGroqWeb = true;
+      try {
+        var webAns = await groqWebFallback(b, o.signal);
+        note('Groq + Web');
+        return fake(webAns);
+      } catch(e){
+        if (o.signal && o.signal.aborted) throw e;
+        err = e;
+        if (groqWebOnly) throw new Error('Pencarian web Groq+Vercel gagal: ' + (e.message || 'tidak diketahui'));
+      }
     }
 
-    var body;
-    try { body = JSON.parse(options.body); }
-    catch (error) { return originalFetch(url, options); }
-
-    if (isImageRequest(body) || hasInlineImage(body)) {
-      return originalFetch(url, options);
+    // PRIORITAS CHAT GROQ
+    if (preferGroqText) {
+      triedGroqText = true;
+      try {
+        var chatAns = await groq(b, o.signal);
+        note('Groq');
+        return fake(chatAns);
+      } catch(e){
+        if (o.signal && o.signal.aborted) throw e;
+        err = e;
+      }
     }
 
-    var conversation;
-    try { conversation = convertConversation(body); }
-    catch (error) { throw error; }
-
-    var systemText = body.system_instruction && body.system_instruction.parts
-      ? getText(body.system_instruction.parts)
-      : '';
-
-    var message = conversation.message;
-    if (systemText) {
-      message = 'INSTRUKSI ASISTEN EDHYX (ikuti sebagai pedoman menjawab):\n' +
-        systemText.slice(0, 7000) +
-        '\n\nPERTANYAAN PENGGUNA:\n' + message;
+    // GEMINI
+    try {
+      r = await patchedFetch(u, o);
+      if (await hasGeminiAnswer(r)){
+        if (isWeb && !(await hasGeminiSources(r)) && !triedGroqWeb && !(o.signal && o.signal.aborted)){
+          triedGroqWeb = true;
+          try {
+            var fixAns = await groqWebFallback(b, o.signal);
+            note('Groq + Web');
+            return fake(fixAns);
+          } catch(fe){
+            if (o.signal && o.signal.aborted) throw fe;
+            err = fe;
+          }
+        } else {
+          note('Gemini');
+          return r;
+        }
+      }
+    } catch(e){
+      if (o.signal && o.signal.aborted) throw e;
+      err = e;
     }
 
-    var response = await originalFetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        message: message,
-        history: conversation.history
-      }),
-      signal: options.signal
-    });
-
-    var data = await response.json().catch(function () { return {}; });
-    if (!response.ok) {
-      var details = Array.isArray(data.details) ? data.details.join(' | ') : '';
-      throw new Error(data.error || details || ('Cloudflare Worker HTTP ' + response.status));
+    // FALLBACK GROQ + WEB
+    if (isWeb && !triedGroqWeb && !(o.signal && o.signal.aborted)){
+      try {
+        var retryAns = await groqWebFallback(b, o.signal);
+        note('Groq + Web');
+        return fake(retryAns);
+      } catch(e){
+        if (o.signal && o.signal.aborted) throw e;
+        err = e;
+      }
     }
 
-    var label = $('modelLabel');
-    if (label) label.textContent = 'via ' + (data.provider || 'Cloudflare Worker');
+    // FALLBACK GROQ BIASA
+    if (!isWeb && textOK && !triedGroqText && !(o.signal && o.signal.aborted)){
+      try {
+        var backup = await groq(b, o.signal);
+        note('Groq');
+        return fake(backup);
+      } catch(e){
+        if (o.signal && o.signal.aborted) throw e;
+        err = e;
+      }
+    }
 
-    return workerResponse(data);
+    if (r && !isWeb) return r;
+    throw err || new Error(isWeb
+      ? 'Pencarian web gagal: Groq + Vercel dan Gemini tidak dapat dihubungi.'
+      : 'Gemini dan layanan cadangan tidak dapat dihubungi.');
   };
 
-  // Tandai koneksi backend aktif pada pengaturan tanpa meminta API key Groq di browser.
-  var dlg = $('dlg');
-  var row = dlg && dlg.querySelector('.row');
-  if (dlg && row && !document.getElementById('edhyWorkerInfo')) {
-    var info = document.createElement('div');
-    info.id = 'edhyWorkerInfo';
-    info.style.cssText = 'padding:10px 12px;margin:10px 0;border:1px solid var(--line);border-radius:10px;font-size:13px;line-height:1.5;color:var(--muted)';
-    info.textContent = 'Chat teks dan pencarian web menggunakan Cloudflare Worker (Groq → Gemini cadangan, Tavily). API key Groq dan Tavily disimpan sebagai Secret di Cloudflare, bukan di browser. API key Gemini di atas tetap dipakai untuk fitur gambar dan analisis lampiran.';
-    dlg.insertBefore(info, row);
+  // UI SETTINGS
+  var dlg = $('dlg'), row = dlg && dlg.querySelector('.row');
+  if (!dlg || !row) return;
+  var st = document.createElement('style');
+  st.textContent = 'dialog select{width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font:inherit}';
+  document.head.appendChild(st);
+  var box = document.createElement('div');
+  box.innerHTML =
+    '<label for="gqk">API key Groq<span>Dibuat di console.groq.com. Disimpan hanya di browser ini.</span></label>' +
+    '<input id="gqk" type="password" autocomplete="off" placeholder="gsk_...">' +
+    '<label for="gqm">Model Groq gratis<span>Pilih model gratis Groq untuk chat teks. Batas pemakaian mengikuti kuota akun Groq.</span></label>' +
+    '<select id="gqm"><option value="openai/gpt-oss-120b">GPT-OSS 120B — paling kuat</option><option value="openai/gpt-oss-20b">GPT-OSS 20B — lebih ringan &amp; cepat</option><option value="qwen/qwen3.8-27b">Qwen 3.8 27B — penalaran &amp; umum</option></select>' +
+    '<label for="gmode">Mode Chat<span>Otomatis: Gemini utama, Groq cadangan. Utamakan Groq: Groq dulu untuk chat teks.</span></label>' +
+    '<select id="gmode"><option value="auto">Otomatis</option><option value="gemini">Hanya Gemini</option><option value="groq">Utamakan Groq</option></select>' +
+    '<label for="gwebmode">Mode Pencarian Web<span>Groq + Vercel dulu = cari sumber berita lewat Vercel, lalu Groq menyusun jawaban. Gemini jadi cadangan.</span></label>' +
+    '<select id="gwebmode"><option value="gemini_first">Otomatis (Gemini dulu, Groq cadangan)</option><option value="groq_first">Groq + Vercel dulu (Gemini cadangan)</option><option value="groq_only">Hanya Groq + Vercel (tanpa Gemini)</option></select>';
+  dlg.insertBefore(box, row);
+  function fill(){
+    $('gqk').value = qkey();
+    var savedModel = qmodel();
+    $('gqm').value = ['openai/gpt-oss-120b','openai/gpt-oss-20b','qwen/qwen3.8-27b'].indexOf(savedModel) >= 0 ? savedModel : 'openai/gpt-oss-120b';
+    $('gmode').value = mode();
+    $('gwebmode').value = webMode();
   }
+  new MutationObserver(function(){ if (dlg.open) fill(); })
+    .observe(dlg, { attributes:true, attributeFilter:['open'] });
+  $('saveBtn').addEventListener('click', function(){
+    sv('groq_key', $('gqk').value.trim());
+    sv('groq_model', $('gqm').value.trim() || 'llama-3.3-70b-versatile');
+    sv('groq_mode', $('gmode').value);
+    sv('groq_web_mode', $('gwebmode').value);
+  });
 })();
 </script>
 
