@@ -1116,7 +1116,7 @@ input, textarea{font-size:17.6px!important}
             : searchStatus.toLowerCase() === 'success'
               ? '⚠ Tavily mengembalikan status berhasil, tetapi tidak ada tautan sumber yang dapat ditampilkan.'
               : '⚠ Status pencarian Tavily tidak tersedia dan tidak ada tautan sumber yang dapat ditampilkan. Jawaban ini belum terverifikasi dari web.'
-          });;
+          });
         }
         c.msgs.push({ role:'model', parts:keep, src:src });
         Eyes.unlock(); Eyes.aha(); Eyes.pulse('write', 2600);
